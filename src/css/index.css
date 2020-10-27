@@ -1,0 +1,6 @@
+@import './root-size.css';
+@import '@ryaposov/tokens/custom-media.css';
+@import '@ryaposov/tokens/custom-variables.css';
+@import '@ryaposov/tokens/colors.css';
+@import './tailwind.css';
+@import './base.css';

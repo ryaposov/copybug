@@ -1,0 +1,39 @@
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  --bg-color: var(--app-bg-1);
+  --text-color: var(--app-text-1);
+  
+  background: var(--bg-color);
+  color: var(--text-color);
+
+  font-size: var(--app-font-size);
+  font-weight: var(--app-font-weight);
+  line-height: var(--app-line-height);
+  font-family: var(--app-font-family);
+}
+
+::-moz-selection {
+  /* background: hsl(0, 0%, 90%);
+  color: currentColor; */
+}
+
+::selection {
+  /* background: hsl(0, 0%, 90%);
+  color: currentColor; */
+}
+
+@media (--dark) {
+  ::-moz-selection {
+    /* background: hsl(0, 0%, 55%);
+    color: currentColor; */
+  }
+  
+  ::selection {
+    /* background: hsl(0, 0%, 55%);
+    color: currentColor; */
+  }
+}

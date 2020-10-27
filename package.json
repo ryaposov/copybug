@@ -4,14 +4,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lerna": "lerna bootstrap --hoist --nohoist=@boldking/* --concurrency=1"
+    "lerna": "lerna bootstrap --hoist --nohoist=@ryaposov/* --concurrency=1"
   },
   "dependencies": {
+    "tailwindcss": "^1.9.6",
     "vue": "^3.0.0-rc.1",
     "vue-router": "^4.0.0-beta.13",
     "vuex": "^4.0.0-beta.4"
   },
   "devDependencies": {
+    "@ryaposov/tokens": "^0.0.1",
     "vite": "^1.0.0-rc.1",
     "@vue/compiler-sfc": "^3.0.0-rc.1",
     "postcss-import": "^12.0.1",

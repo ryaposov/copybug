@@ -1,0 +1,24 @@
+{
+  "name": "copybug",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lerna": "lerna bootstrap --hoist --nohoist=@boldking/* --concurrency=1"
+  },
+  "dependencies": {
+    "vue": "^3.0.0-rc.1",
+    "vue-router": "^4.0.0-beta.13",
+    "vuex": "^4.0.0-beta.4"
+  },
+  "devDependencies": {
+    "vite": "^1.0.0-rc.1",
+    "@vue/compiler-sfc": "^3.0.0-rc.1",
+    "postcss-import": "^12.0.1",
+    "postcss-nested": "^4.2.1",
+    "postcss-nested-ancestors": "^2.0.0",
+    "postcss-preset-env": "^6.7.0",
+    "postcss-pxtorem": "^5.1.1",
+    "postcss-reporter": "^6.0.1"
+  }
+}

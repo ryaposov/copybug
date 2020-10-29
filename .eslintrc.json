@@ -1,0 +1,43 @@
+{
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "parserOptions": {
+    "parser": "babel-eslint"
+  },
+  "extends": [
+    "plugin:vue/vue3-recommended"
+  ],
+  "plugins": [
+    "vue"
+  ],
+  "rules": {
+    "no-console": "off",
+    "no-debugger": "off",
+    "vue/require-component-is": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "*vue"
+      ],
+      "rules": {
+        "quotes": [
+          "error",
+          "single",
+          "avoid-escape"
+        ],
+        "space-before-function-paren": [
+          "error",
+          "always"
+        ],
+        "semi": [
+          "error",
+          "never"
+        ],
+        "vue/no-v-html": "off"
+      }
+    }
+  ]
+}

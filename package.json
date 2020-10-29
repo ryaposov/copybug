@@ -4,23 +4,31 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lerna": "lerna bootstrap --hoist --nohoist=@ryaposov/* --concurrency=1"
+    "lerna": "lerna bootstrap --hoist --nohoist=@ryaposov/* --concurrency=1",
+    "svg": "@ryaposov-generate-icons public"
   },
   "dependencies": {
+    "lodash.get": "^4.4.2",
+    "lodash.set": "^4.3.2",
     "tailwindcss": "^1.9.6",
     "vue": "^3.0.0-rc.1",
     "vue-router": "^4.0.0-beta.13",
     "vuex": "^4.0.0-beta.4"
   },
   "devDependencies": {
+    "@ryaposov/essentials": "^0.0.1",
     "@ryaposov/tokens": "^0.0.1",
-    "vite": "^1.0.0-rc.1",
     "@vue/compiler-sfc": "^3.0.0-rc.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.12.1",
+    "eslint-plugin-vue": "^7.1.0",
+    "postcss-each": "^0.10.0",
     "postcss-import": "^12.0.1",
     "postcss-nested": "^4.2.1",
     "postcss-nested-ancestors": "^2.0.0",
     "postcss-preset-env": "^6.7.0",
     "postcss-pxtorem": "^5.1.1",
-    "postcss-reporter": "^6.0.1"
+    "postcss-reporter": "^6.0.1",
+    "vite": "^1.0.0-rc.1"
   }
 }

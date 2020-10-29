@@ -4,7 +4,7 @@
 }
 
 html {
-  --bg-color: var(--app-bg-1);
+  --bg-color: var(--app-bg-2);
   --text-color: var(--app-text-1);
   
   background: var(--bg-color);
@@ -14,6 +14,13 @@ html {
   font-weight: var(--app-font-weight);
   line-height: var(--app-line-height);
   font-family: var(--app-font-family);
+}
+
+html,
+body,
+#app,
+#main {
+  height: 100%;
 }
 
 ::-moz-selection {

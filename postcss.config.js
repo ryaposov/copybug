@@ -4,6 +4,7 @@ module.exports = (ctx) => {
       require('postcss-import')({}),
       require('postcss-nested-ancestors')({}),
       require('postcss-nested')({}),
+      require('postcss-each')({}),
       require('postcss-preset-env')({
         stage: false,
         features: {
@@ -12,8 +13,8 @@ module.exports = (ctx) => {
         },
         importFrom: [
           './src/css/root-size.css',
-          './node_modules/@ryaposov/tokens/custom-variables.css',
-          './node_modules/@ryaposov/tokens/custom-media.css'
+          './node_modules/@ryaposov/tokens/css/custom-variables.css',
+          './node_modules/@ryaposov/tokens/css/custom-media.css'
         ]
       }),
       require('tailwindcss')('./node_modules/@ryaposov/tokens/tailwind.config.js'),

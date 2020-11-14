@@ -3,69 +3,68 @@
     <AppStack
       tag="ul"
       class="app-select-none"
+      role="tablist"
+      aria-label="Screens & Settings Tabs"
     >
-      <li
+      <AppButton
         v-for="(tab, key) in tabs"
         :key="key"
+        :text="tab"
+        :hover="false"
+        size="14"
+        tag="button"
+        underline="brand"
+        underline-width="2"
+        v-bind="tabProps(key)"
         class="app-relative app-cursor-pointer app-mr-16 last:app-mr-initial"
-        @click="$emit('change', key)"
-      >
-        <AppText
-          :text="tab"
-          size="14"
-          leading="compact"
-          v-bind="tabProps(key)"
-          class="app-transition-colors app-duration-150 app-ease-in-out"
-        />
-        <span
-          v-if="key === props.active"
-          class="app-absolute app-left-0 app--bottom-2 
-            app-h-2 app-w-full app-color-bg-brand"
-        />
-      </li>
+        @click="storeUpdateActiveSidebarTab(key)"
+      />
     </AppStack>
   </nav>
 </template>
 
 <script>
   import AppStack from '@ryaposov/essentials/AppStack.vue'
-  import AppText from '@ryaposov/essentials/AppText.vue'
+  import AppButton from '@ryaposov/essentials/AppButton.vue'
+
+  import { mapState, mapActions } from 'vuex'
 
   export default {
     name: 'AppSidebarTabs',
     components: {
       AppStack,
-      AppText
+      AppButton
     },
-    props: {
-      active: {
-        type: String,
-        default: 'screens',
-        validator: val => ['screens', 'settings'].includes(val)
-      }
-    },
-    emits: ['change'],
-    setup (props, { emit }) {
-      const tabProps = (tab) => ({
-        true: {
-          weight: 'bold',
-          color: 1
-        },
-        false: {
-          weight: 'semibold',
-          color: 3,
-          hoverColor: 2
-        }
-      }[props.active === tab])
-
-      return {
-        props,
-        tabProps,
-        tabs: {
+    computed: {
+      tabs () {
+        return {
           screens: 'Screens',
           settings: 'Preset Settings'
         }
-      }
+      },
+      ...mapState({
+        storeActiveSidebarTab: state => state.activeSidebarTab,
+      })
+    },
+    methods: {
+      tabProps (tab) {
+        return {
+          true: {
+            weight: 'bold',
+            color: 1,
+            type: 'underlined'
+          },
+          false: {
+            weight: 'semibold',
+            color: 3,
+            hoverColor: 2,
+            type: 'text'
+          }
+        }[this.storeActiveSidebarTab === tab]
+      },
+      ...mapActions({
+        storeUpdateActiveSidebarTab: 'updateActiveSidebarTab'
+      })
     }
   }
 </script>

@@ -5,93 +5,56 @@
       direction="col"
       class="app-select-none"
     >
-      <li
-        v-for="(screen, key) in props.screens"
-        :key="key"
-        class="app-group app-relative app-cursor-pointer app-mb-4 app-px-20 app-py-12
-          last:app-mb-initial hover:app-color-bg-2"
-        @click="$emit('change', key)"
-      >
-        <AppStack direction="col">
-          <AppStack>
-            <AppText
-              :text="screen.name"
-              size="14"
-              weight="semibold"
-              class="app-mr-8"
-            />
-            <AppText
-              :text="screen.size"
-              size="14"
-              weight="regular"
-              color="3"
-            />
-          </AppStack>
-          <AppStack align="center">
-            <template
-              v-for="(parameter, key) in screen.parameters"
-              :key="key"
-            >
-              <AppText
-                :text="parameter"
-                size="14"
-                weight="regular"
-                color="2"
-              />
-              <span
-                class="app-mx-4 app-h-2 app-w-4 app-color-bg-opposite
-                  app-opacity-25 last:app-hidden"
-              />
-            </template>
-          </AppStack>
-        </AppStack>
-        <AppStack
-          class="app-opacity-0 app-absolute app-right-20 app-top-12
-            group-hover:app-opacity-100"
-        >
-          <AppIcon
-            icon="settings"
-            size="16"
-            color="3"
-            hover-color="2"
-            class="app-mr-12"
-          />
-          <AppIcon
-            icon="target"
-            size="16"
-            color="3"
-            hover-color="2"
-          />
-        </AppStack>
-      </li>
+      <AppSidebarPlug
+        v-if="!storeScreens.length"
+        class="app-absolute app-w-full app-top-1/2 app-left-1/2
+          app-transform app--translate-x-1/2 app--translate-y-1/2"
+        @button-click="onScreenAdd"
+      />
+      <template v-else>
+        <AppSidebarScreen
+          v-for="(screen, key) in storeScreens"
+          :key="key"
+          :screen="screen"
+          @remove="onScreenRemove"
+          @click="$emit('change', screen)"
+        />
+      </template>
     </AppStack>
   </nav>
 </template>
 
 <script>
   import AppStack from '@ryaposov/essentials/AppStack.vue'
-  import AppText from '@ryaposov/essentials/AppText.vue'
-  import AppIcon from '@ryaposov/essentials/AppIcon.vue'
+  
+  import AppSidebarPlug from './AppSidebarPlug.vue'
+  import AppSidebarScreen from './AppSidebarScreen.vue'
+
+  import { mapState, mapActions } from 'vuex'
 
   export default {
     name: 'AppSidebarScreens',
     components: {
       AppStack,
-      AppText,
-      AppIcon
+      AppSidebarPlug,
+      AppSidebarScreen
     },
-    props: {
-      screens: {
-        type: Array,
-        default: () => ([])
-      }
+    computed: {
+      ...mapState({
+        storeScreens: state => state.screens
+      })
     },
-    emits: ['change'],
-    setup (props, { emit }) {
-      
-      return {
-        props
-      }
+    methods: {
+      onScreenRemove ({ id }) {
+        this.storeRemoveScreen(id)
+      },
+      onScreenAdd ($event) {
+        this.storeAddScreen()
+      },
+      ...mapActions({
+        storeAddScreen: 'addScreen',
+        storeRemoveScreen: 'removeScreen'
+      })
     }
   }
 </script>

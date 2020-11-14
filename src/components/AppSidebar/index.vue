@@ -4,26 +4,19 @@
     direction="col"
     tag="aside"
   >
-    <AppSidebarTabs
-      :active="props.activeTab"
-      class="app-px-20 app-py-24"
-      @change="$emit('active-tab-change', $event)"
-    />
+    <AppSidebarTabs class="app-px-20 app-py-24" />
     <div
       ref="scrollViewEl"
       :class="scrollViewClasses"
       class="app-overflow-y-auto"
     >
       <AppSidebarScreens
-        v-if="props.activeTab === 'screens'"
-        :screens="props.screens"
+        v-if="storeActiveSidebarTab === 'screens'"
         class="app-pt-20"
       />
       <AppSidebarSettings
-        v-else-if="props.activeTab === 'settings'"
-        :settings="props.settings"
+        v-else-if="storeActiveSidebarTab === 'settings'"
         class="app-pt-20 app-px-20"
-        @change="$emit('settings-change', $event)"
       />
     </div>
     <AppStack class="app-px-20 app-py-20 app-mt-auto">
@@ -52,6 +45,7 @@
   import AppSidebarSettings from './AppSidebarSettings.vue'
 
   import { ref, onMounted, computed } from 'vue'
+  import { mapState } from 'vuex'
 
   export default {
     name: 'AppSidebar',
@@ -62,59 +56,36 @@
       AppSidebarScreens,
       AppSidebarSettings
     },
-    props: {
-      activeTab: {
-        type: String,
-        default: 'screens',
-        validator: val => ['screens', 'settings'].includes(val)
+    data: () => ({
+      scrollViewOverflow: false
+    }),
+    computed: {
+      tabs () {
+        return { screens: 'Screens', settings: 'Preset Settings' }
       },
-      activePreset: {
-        type: Object,
-        default: () => ({
-          name: '',
-          description: ''
-        })
+      scrollViewClasses () {
+        return [
+          ...{
+            true: ['app-border-t', 'app-border-b', 'app-color-border-1'],
+            false: []
+          }[this.scrollViewOverflow]
+        ]
       },
-      screens: {
-        type: Array,
-        default: () => ([])
-      },
-      settings: {
-        type: Object,
-        default: () => ({})
-      }
+      ...mapState({
+        storeActiveSidebarTab: 'activeSidebarTab'
+      })
     },
-    emits: ['settings-change', 'active-tab-change'],
-    setup (props, { }) {
-      const scrollViewOverflow = ref(false)
-      const scrollViewEl = ref(null)
-      const scrollViewClasses = computed(() => [
-        ...{
-          true: ['app-border-t', 'app-border-b', 'app-color-border-1'],
-          false: []
-        }[scrollViewOverflow.value]
-      ])
+    mounted () {
+      const scrollView = this.$refs.scrollViewEl
+      this.scrollViewOverflow = scrollView.scrollHeight >= scrollView.clientHeight
 
-      onMounted(() => {
-        const scrollView = scrollViewEl.value
-        scrollViewOverflow.value = scrollView.scrollHeight >= scrollView.clientHeight
-
-        const resizeObserver = new ResizeObserver(entries => {
-          for (let entry of entries) {
-            console.log(entries, scrollViewOverflow.value, entry.target.scrollHeight > entry.target.clientHeight, entry.target.scrollHeight, entry.target.clientHeight)
-            scrollViewOverflow.value = entry.target.scrollHeight > entry.target.clientHeight
-          }
-        })
-
-        resizeObserver.observe(scrollViewEl.value)
+      const resizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+          this.scrollViewOverflow = entry.target.scrollHeight > entry.target.clientHeight
+        }
       })
 
-      return {
-        scrollViewEl,
-        scrollViewClasses,
-        scrollViewOverflow,
-        props
-      }
+      resizeObserver.observe(scrollView)
     }
   }
 </script>

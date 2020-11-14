@@ -1,88 +1,50 @@
 <template>
   <AppStack
     id="main"
-    tag="main"
+    tag="div"
     :data-name="$NAME"
     class="app-pl-320"
   >
     <AppSidebar
-      :active-tab="activeTab"
-      :screens="screens"
-      :settings="settings"
-      class="app-absolute app-left-0 app-top-0 app-h-full app-w-320 app-color-bg-1"
-      @active-tab-change="activeTab = $event"
-      @settings-change="onSettingsChange"
+      v-if="storeSidebarVisibility"
+      class="app-absolute app-z-10 app-left-0 app-top-0 app-h-full app-w-320 app-color-bg-1"
     />
-    <RouterView />
-    {{ settings }}
+    <AppCanvas
+      :class="canvasClasses"
+      class="app-absolute app-z-0 app-left-0 app-top-0 app-h-full app-w-full"
+    />
   </AppStack>
 </template>
 
 <script>
-import AppSidebar from '/~/components/AppSidebar/index.vue'
 import AppStack from '@ryaposov/essentials/AppStack.vue'
+import AppSidebar from '/~/components/AppSidebar/index.vue'
+import AppCanvas from '/~/components/AppCanvas/index.vue'
+
+import { mapState, mapActions } from 'vuex'
 
 export default {
   name: 'App',
   components: {
     AppStack,
-    AppSidebar
+    AppSidebar,
+    AppCanvas
   },
   data: () => ({
-    activeTab: 'screens',
-    settings: {
-      mainUrl: 'v2.boldking.localhost',
-      defaultSize: 'iPhone 8',
-      defaultPlatform: 'nl',
-      defaultLanguage: 'en-gb',
-      ignoreBrowserUi: false,
-      scrollPanesTogether: false
-    },
-    screens: [
-      {
-        name: 'iPhone 8',
-        size: '375x677',
-        parameters: {
-          platform: 'nl',
-          language: 'en-gb'
-        }
-      },
-      {
-        name: 'iPhone 8 Plus',
-        size: '414x714',
-        parameters: {
-          platform: 'nl',
-          language: 'nl-nl'
-        }
-      },
-      {
-        name: 'iPhone 8',
-        size: '375x677',
-        parameters: {
-          platform: 'nl',
-          language: 'en-gb'
-        }
-      },
-      {
-        name: 'iPhone 8 Plus',
-        size: '414x714',
-        parameters: {
-          platform: 'nl',
-          language: 'nl-nl'
-        }
-      }
-    ]
+    
   }),
-  methods: {
-    onActiveTabChange () {
-      
+  computed: {
+    canvasClasses () {
+      return [
+        ...{
+          true: ['app-pl-320'],
+          false: []
+        }[this.storeSidebarVisibility]
+      ]
     },
-    onSettingsChange ($event) {
-      this.settings = {
-        ...this.settings,
-        ...$event
-      }
-    }
-  }
+    ...mapState({
+      storeSidebarVisibility: state => state.sidebarVisibility,
+    })
+  },
 }
 </script>

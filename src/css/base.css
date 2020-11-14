@@ -21,6 +21,7 @@ body,
 #app,
 #main {
   height: 100%;
+  overflow: hidden;
 }
 
 ::-moz-selection {

@@ -4,23 +4,23 @@
     wrap="wrap"
     class=""
   >
-    <template v-if="storeScreens.length">
+    <template v-if="storeActivePreset.screens.length">
       <AppCanvasScreen
-        v-for="screen in storeScreens"
+        v-for="screen in storeActivePreset.screens"
         :key="screen.id"
         :screen="screen"
         class="app-mr-28 app-mb-28"
-        @remove="onScreenRemove"
-        @change="onScreenChange"
+        @remove="storeRemoveActivePresetScreen"
+        @change="storeUpdateActivePresetScreen"
       />
     </template>
     <AppStack
       direction="col"
       align="center"
       justify="center"
-      :style="storeScreens.length ? {
-        width: storeScreens[storeScreens.length - 1].parameters.size.split('x')[0] + 'px',
-        height: storeScreens[storeScreens.length - 1].parameters.size.split('x')[1] + 'px',
+      :style="storeActivePreset.screens.length ? {
+        width: storeActivePreset.screens[storeActivePreset.screens.length - 1].parameters.size.split('x')[0] + 'px',
+        height: storeActivePreset.screens[storeActivePreset.screens.length - 1].parameters.size.split('x')[1] + 'px',
       } : {}"
       class="app-mt-36 app-overflow-hidden app-rounded-4 app-color-border-2 app-opacity-75
         app-border app-group app-w-320 app-h-600 hover:app-opacity-100 app-transition-opacity app-duration-100"
@@ -29,7 +29,7 @@
         direction="col"
         align="center"
         class="app-text-center app-cursor-pointer"
-        @click="onScreenAdd"
+        @click="storeAddActivePresetScreen"
       >
         <AppStack
           align="center"
@@ -74,7 +74,7 @@ import AppText from '@ryaposov/essentials/AppText.vue'
 import AppIcon from '@ryaposov/essentials/AppIcon.vue'
 import AppCanvasScreen from './AppCanvasScreen.vue'
 
-import { mapState, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'AppCanvasScreens',
@@ -85,24 +85,15 @@ export default {
     AppCanvasScreen
   },
   computed: {
-    ...mapState({
-      storeScreens: state => state.screens
+    ...mapGetters({
+      storeActivePreset: 'activePreset'
     })
   },
   methods: {
-    onScreenRemove ({ id }) {
-      this.storeRemoveScreen(id)
-    },
-    onScreenAdd ($event) {
-      this.storeAddScreen()
-    },
-    onScreenChange (screen) {
-      this.storeUpdateScreen(screen)
-    },
     ...mapActions({
-      storeAddScreen: 'addScreen',
-      storeRemoveScreen: 'removeScreen',
-      storeUpdateScreen: 'updateScreen'
+      storeRemoveActivePresetScreen: 'removeActivePresetScreen',
+      storeAddActivePresetScreen: 'addActivePresetScreen',
+      storeUpdateActivePresetScreen: 'updateActivePresetScreen'
     })
   }
 }

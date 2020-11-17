@@ -5,8 +5,11 @@ import globalMixin from '/~/plugins/vue-prototype.js'
 import App from './App.vue'
 import '/~/css/index.css'
 
-const app = createApp(App)
-app.use(store)
-app.use(router)
-app.mixin(globalMixin)
-app.mount('#app')
+store.init()
+  .then(() => {
+    const app = createApp(App)
+    app.use(store.vuex)
+    app.use(router)
+    app.mixin(globalMixin)
+    app.mount('#app')
+  })

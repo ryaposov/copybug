@@ -20,13 +20,16 @@
           color="3"
         />
       </AppStack>
-      <AppStack align="center">
+      <AppStack
+        align="center"
+        wrap="wrap"
+      >
         <template
-          v-for="(parameter, key) in screen.parameters"
+          v-for="(parameter, key) in parameters"
           :key="key"
         >
           <AppText
-            :text="parameter"
+            :text="screen.parameters[parameter]"
             size="14"
             weight="regular"
             color="2"
@@ -85,6 +88,15 @@ export default {
       default: () => ({})
     }
   },
-  emits: ['change', 'remove']
+  emits: ['change', 'remove'],
+  computed: {
+    parameters () {
+      const parameters = ['language', 'platform']
+
+      if (screen.name) parameters.unshift('device')
+
+      return parameters
+    }
+  }
 }
 </script>

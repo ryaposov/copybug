@@ -1,85 +1,177 @@
 <template>
   <nav :data-name="$NAME">
-    <AppForm
-      class="app-select-none app-w-260"
-    >
+    <AppForm class="app-select-none app-w-260">
       <AppFormItem
-        label="Main Url"
-        prop="mainUrl"
+        label="Preset Name"
+        prop="name"
         class="app-mb-20"
       >
         <AppInput
-          name="mainUrl"
-          :value="storePresetSettings.mainUrl"
+          name="name"
+          :value="storeActivePreset.name"
           responsive
-          @input="onSettingsChange({ mainUrl: $event })"
+          @input="storeUpdateActivePreset({ name: $event })"
+        />
+      </AppFormItem>
+      <AppFormItem
+        label="Main Url"
+        prop="settings.mainUrl"
+        class="app-mb-20"
+      >
+        <AppInput
+          name="settings.mainUrl"
+          :value="storeActivePreset.settings.mainUrl"
+          responsive
+          @input="storeUpdateActivePresetSettings({ mainUrl: $event })"
         />
       </AppFormItem>
       <AppFormItem
         label="Default Size"
-        prop="defaultSize"
+        prop="settings.defaultSize"
         class="app-mb-20"
       >
         <AppInput
-          name="defaultSize"
+          name="settings.defaultSize"
           tag="select"
-          :value="storePresetSettings.defaultSize"
+          :value="storeActivePreset.settings.defaultSize"
           :options="defaultSizeOptions"
           responsive
-          @input="onSettingsChange({ defaultSize: $event })"
+          @input="storeUpdateActivePresetSettings({ defaultSize: $event })"
         />
       </AppFormItem>
       <AppFormItem
         label="Default Platform"
-        prop="defaultPlatform"
+        prop="settings.defaultPlatform"
         class="app-mb-20"
       >
         <AppInput
-          name="defaultPlatform"
+          name="settings.defaultPlatform"
           tag="select"
-          :value="storePresetSettings.defaultPlatform"
-          :options="defaultSizeOptions"
+          :value="storeActivePreset.settings.defaultPlatform"
+          :options="defaultPlatformOptions"
           responsive
-          @input="onSettingsChange({ defaultPlatform: $event })"
+          @input="storeUpdateActivePresetSettings({ defaultPlatform: $event })"
         />
       </AppFormItem>
       <AppFormItem
         label="Default Language"
-        prop="defaultLanguage"
+        prop="settings.defaultLanguage"
         class="app-mb-20"
       >
         <AppInput
-          name="defaultLanguage"
+          name="settings.defaultLanguage"
           tag="select"
-          :value="storePresetSettings.defaultLanguage"
-          :options="defaultSizeOptions"
+          :value="storeActivePreset.settings.defaultLanguage"
+          :options="defaultLanguageOptions"
           responsive
-          @input="onSettingsChange({ defaultLanguage: $event })"
+          @input="storeUpdateActivePresetSettings({ defaultLanguage: $event })"
         />
       </AppFormItem>
       <AppFormItem
-        prop="ignoreBrowserUi"
+        prop="settings.ignoreBrowserUi"
         class="app-mb-16"
       >
         <AppCheckbox
-          name="ignoreBrowserUi"
+          name="settings.ignoreBrowserUi"
           label="Ignore Browser UI"
-          :checked="storePresetSettings.ignoreBrowserUi"
+          :checked="storeActivePreset.settings.ignoreBrowserUi"
           responsive
-          @change="onSettingsChange({ ignoreBrowserUi: $event })"
+          @change="storeUpdateActivePresetSettings({ ignoreBrowserUi: $event })"
         />
       </AppFormItem>
       <AppFormItem
-        prop="scrollPanesTogether"
+        prop="settings.scrollPanesTogether"
         class="app-mb-16"
       >
         <AppCheckbox
-          name="scrollPanesTogether"
+          name="settings.scrollPanesTogether"
           label="Scroll Panes Together"
-          :checked="storePresetSettings.scrollPanesTogether"
+          :checked="storeActivePreset.settings.scrollPanesTogether"
           responsive
-          @change="onSettingsChange({ scrollPanesTogether: $event })"
+          @change="storeUpdateActivePresetSettings({ scrollPanesTogether: $event })"
         />
+      </AppFormItem>
+      <AppFormItem
+        label="Pages"
+        prop="pages"
+        class="app-mb-16"
+      >
+        <div class="app-mb-8">
+          <AppStack
+            v-for="(page, index) in storeActivePreset.pages"
+            :key="index"
+            align="center"
+            class="app-mb-4 last:app-mb-initial"
+          >
+            <AppStack
+              align="center"
+              justify="center"
+              class="app-cursor-pointer app-w-16 app-h-16 app-color-bg-2 app-mr-4 app-rounded-4
+              app-transition-opacity app-duration-100 hover:app-opacity-75"
+              @click="storeRemoveActivePresetPage(index)"
+            >
+              <AppIcon
+                size="10"
+                color="3"
+                icon="minus"
+              />
+            </AppStack>
+            <AppText
+              size="14"
+              color="1"
+              weight="regular"
+              class="app-border app-overflow-hidden app-rounded-4 app-color-border-transparent
+              hover:app-color-border-1"
+            >
+              <input
+                type="text"
+                :value="page.name"
+                class="app-outline-none app-px-4 app-pt-2"
+                :style="fluidInputStyle(page.name)"
+                @input="storeUpdateActivePresetPage({ ...page, name: $event.target.value })"
+              >
+            </AppText>
+            <AppText
+              size="14"
+              color="3"
+              weight="regular"
+              class="app-border app-overflow-hidden app-rounded-4 app-color-border-transparent
+              hover:app-color-border-1"
+            >
+              <input
+                type="text"
+                :value="page.path"
+                class="app-outline-none app-px-4 app-pt-2"
+                :style="fluidInputStyle(page.path)"
+                @input="storeUpdateActivePresetPage({ ...page, path: $event.target.value })"
+              >
+            </AppText>
+          </AppStack>
+        </div>
+        <AppStack
+          class="app-cursor-pointer app-transition-opacity app-duration-100 hover:app-opacity-75"
+          align="center"
+          @click="storeAddActivePresetPage"
+        >
+          <AppStack
+            align="center"
+            justify="center"
+            class="app-relative app--top-1 app-w-16 app-h-16 app-mr-8 app-border app-color-border-brand app-rounded-4"
+          >
+            <AppIcon
+              size="10"
+              color="brand"
+              icon="plus"
+            />
+          </AppStack>
+          <AppText
+            size="14"
+            color="brand"
+            text="Add Page"
+            weight="regular"
+            class="app-mr-4"
+          />
+        </AppStack>
       </AppFormItem>
     </AppForm>
   </nav>
@@ -90,8 +182,11 @@
   import AppFormItem from '@ryaposov/essentials/AppFormItem.vue'
   import AppInput from '@ryaposov/essentials/AppInput.vue'
   import AppCheckbox from '@ryaposov/essentials/AppCheckbox.vue'
+  import AppStack from '@ryaposov/essentials/AppStack.vue'
+  import AppIcon from '@ryaposov/essentials/AppIcon.vue'
+  import AppText from '@ryaposov/essentials/AppText.vue'
 
-  import { mapState, mapActions } from 'vuex'
+  import { mapState, mapGetters, mapActions } from 'vuex'
 
   export default {
     name: 'AppSidebarSettings',
@@ -99,53 +194,54 @@
       AppForm,
       AppFormItem,
       AppInput,
-      AppCheckbox
+      AppCheckbox,
+      AppStack,
+      AppIcon,
+      AppText
     },
-    data: () => ({
-      defaultSizeOptions: [
-        {
-          value: '',
-          text: 'Select',
-          selected: true,
-          disabled: true
-        },
-        {
-          value: 'iphone-8',
-          text: 'iPhone 8',
-          hidden: false,
-          disabled: false
-        },
-        {
-          value: 'iphone-8-plus',
-          text: 'iPhone 8 Plus',
-          hidden: false,
-          disabled: false
-        },
-        {
-          value: 'iphone-x',
-          text: 'iPhone X',
-          hidden: false,
-          disabled: false
-        },
-        {
-          value: 'iphone-x-plus',
-          text: 'iPhone X Plus',
-          hidden: false,
-          disabled: false
-        },
-      ]
-    }),
     computed: {
+      defaultSizeOptions () {
+        return [{
+          text: 'Auto',
+          value: ''
+        }, ...this.storeDevices.map(device => ({
+          text: device.name,
+          value: device.value
+        }))]
+      },
+      defaultPlatformOptions () {
+        return this.storePlatforms.map(platform => ({
+          text: platform.name,
+          value: platform.value
+        }))
+      },
+      defaultLanguageOptions () {
+        return this.storeLanguages.map(language => ({
+          text: language.name,
+          value: language.value
+        }))
+      },
       ...mapState({
-        storePresetSettings: state => state.presetSettings,
+        storeDevices: state => state.devices,
+        storePlatforms: state => state.platforms,
+        storeLanguages: state => state.languages
+      }),
+      ...mapGetters({
+        storeActivePreset: 'activePreset'
       })
     },
     methods: {
-      onSettingsChange (settings) {
-        this.storeUpdatePresetSettings(settings)
+      fluidInputStyle (string) {
+        return {
+          width: (string.length * 7 + 8) + 'px'
+        }
       },
       ...mapActions({
-        storeUpdatePresetSettings: 'updatePresetSettings'
+        storeUpdateActivePreset: 'updateActivePreset',
+        storeUpdateActivePresetSettings: 'updateActivePresetSettings',
+        storeUpdateActivePresetPage: 'updateActivePresetPage',
+        storeAddActivePresetPage: 'addActivePresetPage',
+        storeRemoveActivePresetPage: 'removeActivePresetPage'
       })
     }
   }

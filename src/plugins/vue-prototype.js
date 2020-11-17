@@ -6,7 +6,7 @@ export default {
       return this.$DOMAIN + '/icons.svg'
     },
     $DOMAIN () {
-      return process.env.NODE_ENV === 'development' ? 'http://localhost:3030' : 'https://copybug.ryaposov.com'
+      return process.env.NODE_ENV === 'development' ? '' : ''
     },
     $NAME () {
       return process.env.NODE_ENV === 'development' ? this.$options.name
@@ -15,9 +15,9 @@ export default {
         .join('-')
         .toUpperCase() : null;
     },
-    ...mapGetters('app', {
+    ...mapGetters({
       $MD: 'isMdBreakpoint',
-      $XS: 'isSmBreakpoint',
+      $XS: 'isSmBreakpoint'
     }),
   },
   methods: {

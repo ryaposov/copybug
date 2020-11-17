@@ -6,17 +6,17 @@
       class="app-select-none"
     >
       <AppSidebarPlug
-        v-if="!storeScreens.length"
+        v-if="!storeActivePreset.screens.length"
         class="app-absolute app-w-full app-top-1/2 app-left-1/2
           app-transform app--translate-x-1/2 app--translate-y-1/2"
-        @button-click="onScreenAdd"
+        @button-click="storeAddActivePresetScreen"
       />
       <template v-else>
         <AppSidebarScreen
-          v-for="(screen, key) in storeScreens"
+          v-for="(screen, key) in storeActivePreset.screens"
           :key="key"
           :screen="screen"
-          @remove="onScreenRemove"
+          @remove="storeRemoveActivePresetScreen"
           @click="$emit('change', screen)"
         />
       </template>
@@ -30,7 +30,7 @@
   import AppSidebarPlug from './AppSidebarPlug.vue'
   import AppSidebarScreen from './AppSidebarScreen.vue'
 
-  import { mapState, mapActions } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     name: 'AppSidebarScreens',
@@ -40,20 +40,14 @@
       AppSidebarScreen
     },
     computed: {
-      ...mapState({
-        storeScreens: state => state.screens
+      ...mapGetters({
+        storeActivePreset: 'activePreset'
       })
     },
     methods: {
-      onScreenRemove ({ id }) {
-        this.storeRemoveScreen(id)
-      },
-      onScreenAdd ($event) {
-        this.storeAddScreen()
-      },
       ...mapActions({
-        storeAddScreen: 'addScreen',
-        storeRemoveScreen: 'removeScreen'
+        storeRemoveActivePresetScreen: 'removeActivePresetScreen',
+        storeAddActivePresetScreen: 'addActivePresetScreen'
       })
     }
   }

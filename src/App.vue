@@ -45,6 +45,6 @@ export default {
     ...mapState({
       storeSidebarVisibility: state => state.sidebarVisibility,
     })
-  },
+  }
 }
 </script>

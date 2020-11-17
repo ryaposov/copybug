@@ -34,7 +34,7 @@ import { ref, onMounted } from 'vue'
 import AppCanvasScreenBar from './AppCanvasScreenBar.vue'
 import AppCanvasScreenConfigure from './AppCanvasScreenConfigure.vue'
 
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import boldkingCode from './boldking.js'
 
@@ -57,10 +57,10 @@ export default {
   }),
   computed: {
     url () {
-      return this.storePresetSettings.mainUrl
+      return this.storeActivePreset.mainUrl
     },
-    ...mapState({
-      storePresetSettings: state => state.presetSettings
+    ...mapGetters({
+      storeActivePreset: 'activePreset'
     }),
   },
   mounted () {

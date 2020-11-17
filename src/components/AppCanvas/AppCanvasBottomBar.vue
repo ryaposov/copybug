@@ -8,8 +8,10 @@
         bg="brand"
         color="opposite"
         rounded="3"
-        text="Save"
+        text="New Preset"
+        icon="plus"
         class="app-mr-8"
+        @click="onNewPresetClick"
       />
       <AppButton
         size="14"
@@ -18,8 +20,20 @@
         bg="25"
         color="1"
         rounded="3"
+        href="#presets"
         text="Load Preset"
       />
+      <AppModal
+        ref="presetModal"
+        anchor="presets"
+      >
+        <AppCanvasBottomBarPresets
+          :presets="storePresets"
+          class="app-w-520 app-pb-80 app-px-60"
+          @preset-select="onPresetSelect"
+          @preset-remove="onPresetRemove"
+        />
+      </AppModal>
     </AppStack>
     <AppStack class="app-ml-auto">
       <AppStack class="app-mr-32">
@@ -33,7 +47,7 @@
           text="Add Pane"
           icon="plus"
           class="app-mr-8"
-          @click="onScreenAdd"
+          @click="storeAddActivePresetScreen"
         />
         <AppButton
           size="14"
@@ -77,35 +91,53 @@
 <script>
 import AppStack from '@ryaposov/essentials/AppStack.vue'
 import AppButton from '@ryaposov/essentials/AppButton.vue'
+import AppModal from '@ryaposov/essentials/AppModal.vue'
 
-import { mapState, mapActions } from 'vuex'
+import AppCanvasBottomBarPresets from './AppCanvasBottomBarPresets.vue'
+
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
   name: 'AppCanvasBottomBar',
   components: {
     AppStack,
     AppButton,
+    AppModal,
+    AppCanvasBottomBarPresets
   },
   computed: {
     ...mapState({
-      storeSidebarVisibility: state => state.sidebarVisibility
+      storeSidebarVisibility: state => state.sidebarVisibility,
+      storePresets: state => state.presets
+    }),
+    ...mapGetters({
+      storeActivePreset: 'activePreset'
     }),
   },
   methods: {
-    onScreenAdd ($event) {
-      this.storeAddScreen()
+    onNewPresetClick () {
+      this.storeAddPreset()
+        .then(preset => this.storeSetActivePresetId(preset.id))
+    },
+    onPresetSelect (id) {
+      this.storeSetActivePresetId(id)
+      this.$refs.presetModal.close()
+    },
+    onPresetRemove (id) {
+      this.storeRemovePreset(id)
     },
     onSidebarToggleClick () {
       this.storeUpdateSidebarVisibility(!this.storeSidebarVisibility)
     },
     ...mapActions({
-      storeAddScreen: 'addScreen',
+      storeAddActivePresetScreen: 'addActivePresetScreen',
+      storeAddPreset: 'addPreset',
+      storeRemovePreset: 'removePreset',
       storeUpdateSidebarVisibility: 'updateSidebarVisibility'
+    }),
+    ...mapMutations({
+      storeSetActivePresetId: 'setActivePresetId'
     })
   }
 }
 </script>
-
-<style>
-
-</style>

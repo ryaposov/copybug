@@ -75,6 +75,8 @@ import AppStack from '@ryaposov/essentials/AppStack.vue'
 import AppText from '@ryaposov/essentials/AppText.vue'
 import AppIcon from '@ryaposov/essentials/AppIcon.vue'
 
+import { mapState } from 'vuex'
+
 export default {
   name: 'AppCanvasScreenConfigure',
   components: {
@@ -98,141 +100,28 @@ export default {
       size: 'Size', 
       platform: 'Platform',
       language: 'Language'
-    },
-    sizes: [
-      {
-        name: 'iPhone X',
-        value: '375x812'
-      },
-      {
-        name: 'iPhone 8 Plus',
-        value: '414x736'
-      },
-      {
-        name: 'iPhone 8',
-        value: '375x667'
-      },
-      {
-        name: 'iPhone 7 Plus',
-        value: '414x736'
-      },
-      {
-        name: 'iPhone 6s Plus',
-        value: '375x667'
-      },
-      {
-        name: 'iPhone 6 Plus',
-        value: '375x667'
-      },
-      {
-        name: 'iPhone 7',
-        value: '375x667'
-      },
-      {
-        name: 'iPhone 6s',
-        value: '375x667'
-      },
-      {
-        name: 'iPhone 6',
-        value: '375x667'
-      },
-      {
-        name: 'iPhone SE',
-        value: '320x568'
-      }
-    ],
-    platforms: [
-      {
-        value: 'gb',
-        name: 'United Kingdom'
-      },
-      {
-        value: 'nl',
-        name: 'Netherlands'
-      },
-      {
-        value: 'de',
-        name: 'Germany'
-      },
-      {
-        value: 'fr',
-        name: 'France'
-      },
-      {
-        value: 'at',
-        name: 'Austia'
-      },
-      {
-        value: 'sw',
-        name: 'Sweden'
-      },
-      {
-        value: 'es',
-        name: 'Spain'
-      },
-      {
-        value: 'it',
-        name: 'Italy'
-      },
-      {
-        value: 'ir',
-        name: 'Ireland'
-      },
-      {
-        value: 'pl',
-        name: 'Poland'
-      },
-    ],
-    languages: [
-      {
-        value: 'gb',
-        name: 'English'
-      },
-      {
-        value: 'nl',
-        name: 'Dutch'
-      },
-      {
-        value: 'de',
-        name: 'German'
-      },
-      {
-        value: 'fr',
-        name: 'French'
-      },
-      {
-        value: 'sw',
-        name: 'Swedish'
-      },
-      {
-        value: 'es',
-        name: 'Spanish'
-      },
-      {
-        value: 'it',
-        name: 'Italian'
-      },
-      {
-        value: 'pl',
-        name: 'Polish'
-      }
-    ]
+    }
   }),
   computed: {
     options () {
       return {
-        size: this.sizes,
+        size: this.devices,
         platform: this.platforms,
         language: this.languages
       }
-    }
+    },
+    ...mapState({
+      devices: state => state.devices,
+      platforms: state => state.platforms,
+      languages: state => state.languages
+    })
   },
   methods: {
     onParameterClick (option, key) {
       const payload = {}
 
       if (key === 'size') {
-        const device = this.sizes.find(size => size.value === option.value)
+        const device = this.devices.find(size => size.value === option.value)
         payload.device = device.name
       }
 

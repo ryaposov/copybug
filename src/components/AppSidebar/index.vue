@@ -19,20 +19,29 @@
         class="app-pt-20 app-px-20"
       />
     </div>
-    <AppStack class="app-px-20 app-py-20 app-mt-auto">
-      <AppText
-        text="Default Preset"
-        size="14"
-        weight="semibold"
-        color="3"
-        class="app-mr-8"
+    <AppStack
+      direction="col"
+      class="app-mt-auto"
+    >
+      <AppSidebarScreensPages
+        v-if="storeActiveSidebarTab === 'screens' && storeActivePreset.activePageId"
+        class="app-px-20"
       />
-      <AppText
-        text="4 screens"
-        size="14"
-        weight="regular"
-        color="3"
-      />
+      <AppStack class="app-px-20 app-py-20">
+        <AppText
+          :text="storeActivePreset.name"
+          size="14"
+          weight="semibold"
+          color="3"
+          class="app-mr-8"
+        />
+        <AppText
+          :text="storeActivePreset.screens.length + ' screens'"
+          size="14"
+          weight="regular"
+          color="3"
+        />
+      </AppStack>
     </AppStack>
   </AppStack>
 </template>
@@ -43,9 +52,10 @@
   import AppSidebarTabs from './AppSidebarTabs.vue'
   import AppSidebarScreens from './AppSidebarScreens.vue'
   import AppSidebarSettings from './AppSidebarSettings.vue'
+  import AppSidebarScreensPages from './AppSidebarScreensPages.vue'
 
   import { ref, onMounted, computed } from 'vue'
-  import { mapState } from 'vuex'
+  import { mapState, mapGetters } from 'vuex'
 
   export default {
     name: 'AppSidebar',
@@ -54,7 +64,8 @@
       AppText,
       AppSidebarTabs,
       AppSidebarScreens,
-      AppSidebarSettings
+      AppSidebarSettings,
+      AppSidebarScreensPages
     },
     data: () => ({
       scrollViewOverflow: false
@@ -73,6 +84,9 @@
       },
       ...mapState({
         storeActiveSidebarTab: 'activeSidebarTab'
+      }),
+      ...mapGetters({
+        storeActivePreset: 'activePreset'
       })
     },
     mounted () {

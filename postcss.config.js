@@ -1,3 +1,5 @@
+const tailwind = require('./node_modules/@ryaposov/tokens/tailwind.config.js')
+
 module.exports = (ctx) => {
   return {
     plugins: [
@@ -17,7 +19,13 @@ module.exports = (ctx) => {
           './node_modules/@ryaposov/tokens/css/custom-media.css'
         ]
       }),
-      require('tailwindcss')('./node_modules/@ryaposov/tokens/tailwind.config.js'),
+      require('tailwindcss')({
+        ...tailwind,
+        purge: [
+          './src/**/*.vue',
+          './packages/**/*.vue'
+        ],
+      }),
       require('autoprefixer')({}),
       require('postcss-pxtorem')({
         rootValue: 16,

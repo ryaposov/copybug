@@ -6,7 +6,10 @@ export default {
       return this.$DOMAIN + '/icons.svg'
     },
     $DOMAIN () {
-      return process.env.NODE_ENV === 'development' ? '' : ''
+      return process.env.NODE_ENV === 'development' ? 'http://localhost:3030' : 'http://localhost:3030'
+    },
+    $PROXY_URL () {
+      return process.env.NODE_ENV === 'development' ? 'http://localhost:3032' : 'http://localhost:3032'
     },
     $NAME () {
       return process.env.NODE_ENV === 'development' ? this.$options.name
@@ -27,6 +30,6 @@ export default {
       } else {
         return this[name]
       }
-    }
+    },
   }
 }

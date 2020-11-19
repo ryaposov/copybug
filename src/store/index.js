@@ -129,12 +129,19 @@ const store = createStore({
           value: 'pl',
           name: 'Polish'
         }
-      ]
+      ],
+      scales: [...Array(20).fill(0)].map((value, key) => ({
+        name: `${((key + 1) * 5) + 45}%`,
+        value: ((key + 1) * 5) + 45,
+      }))
     }
   },
   getters: {
     activePreset (state) {
       return state.presets[state.activePresetId]
+    },
+    activePage (state, getters) {
+      return getters.activePreset.pages.find(page => page.id === getters.activePreset.activePageId)
     },
     isMdBreakpoint () {
       return true
@@ -162,13 +169,14 @@ const store = createStore({
         createdAt: new Date().getTime() / 1000,
         activePageId: null,
         settings: {
-          mainUrl: 'http://localhost:3032',
+          mainUrl: this.$PROXY_URL,
           defaultSize: null,
           defaultPlatform: 'gb',
           defaultLanguage: 'gb',
           ignoreBrowserUi: false,
           scrollPanesTogether: false
         },
+        scale: 100,
         screens: [],
         pages: []
       }

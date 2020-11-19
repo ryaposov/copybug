@@ -1,5 +1,10 @@
 <template>
-  <div class="app-relative app-select-none">
+  <div
+    class="app-relative app-select-none"
+    :style="{
+      width: scaledScreenSize.width + 'px'
+    }"
+  >
     <AppCanvasScreenBar
       :screen="screen"
       :configure="configure"
@@ -10,12 +15,15 @@
     <div class="app-relative app-color-bg-1 app-overflow-hidden app-rounded-4 app-color-border-1 app-border">
       <div
         ref="iframe"
-        :src="url"
         :style="{
-          width: screen.parameters.size.split('x')[0] + 'px',
-          height: screen.parameters.size.split('x')[1] + 'px',
+          width: scaledScreenSize.width + 'px',
+          height: scaledScreenSize.height + 'px',
         }"
-      />
+      >
+        <iframe
+          v-bind="iframeProps"
+        />
+      </div>
       <AppCanvasScreenConfigure
         v-if="configure"
         :parameters="screen.parameters"
@@ -48,6 +56,10 @@ export default {
     screen: {
       type: Object,
       default: () => ({})
+    },
+    html: {
+      type: String,
+      default: ''
     }
   },
   emits: ['remove', 'change'],
@@ -56,36 +68,52 @@ export default {
     activeParameter: 'size'
   }),
   computed: {
-    url () {
-      return this.storeActivePreset.mainUrl
+    scaledScreenSize () {
+      const scale = this.storeActivePreset.scale
+      let screenWidth = parseInt(this.screen.parameters.size.split('x')[0])
+      let screenHeight = parseInt(this.screen.parameters.size.split('x')[1])
+
+      screenWidth = (screenWidth * (scale / 100))
+      screenHeight = (screenHeight * (scale / 100))
+
+      return {
+        width: screenWidth,
+        height: screenHeight
+      }
+    },
+    iframeProps () {
+      const scale = this.storeActivePreset.scale
+      const multiplier = this.scaledScreenSize.width / (this.scaledScreenSize.width * (scale / 100))
+
+      return {
+        src: this.$PROXY_URL + (this.storeActivePage ? this.storeActivePage.path : ''),
+        sandbox: 'allow-same-origin allow-scripts allow-forms',
+        referrerPolicy: 'no-referrer',
+        width: '100%',
+        height: '100%',
+        style: {
+          'width': `${multiplier * 100}% !important`,
+          'height': `${multiplier * 100}% !important`,
+          '-webkit-transform': `scale(${scale / 100})`,
+          'transform': `scale(${scale / 100})`,
+          '-webkit-transform-origin': '0 0',
+          'transform-origin': '0 0',
+        }
+      }
     },
     ...mapGetters({
-      storeActivePreset: 'activePreset'
+      storeActivePreset: 'activePreset',
+      storeActivePage: 'activePage'
     }),
   },
-  mounted () {
-    // this.mountIframe()
-  },
   methods: {
-    mountIframe () {
-      // this.$refs.iframe.innerHTML = boldkingCode
-      var iframe = document.createElement('iframe')
-      var html = boldkingCode.replace(/src="\//g, 'src="https://boldking.com/nl/en-gb/').replace(/data-src="\//g, 'data-src="https://boldking.com/nl/en-gb/')
-      this.$refs.iframe.appendChild(iframe)
-      iframe.src = 'https://boldking.com/nl/en-gb/'
-      iframe.width = '100%'
-      iframe.height = '100%'
-      iframe.contentWindow.document.open()
-      iframe.contentWindow.document.write(html)
-      iframe.contentWindow.document.close()
-    },
     onParameterChange ($event) {
       this.$emit('change', { ...this.screen, parameters: { ...this.screen.parameters, ...$event }})
       this.configure = false
     },
     onParameterSelect ($event) {
+      this.configure = this.activeParameter === $event && this.configure ? false : true
       this.activeParameter = $event
-      this.configure = true
     }
   }
 }

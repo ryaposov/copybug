@@ -81,7 +81,17 @@
           :border="storeSidebarVisibility ? 'opposite' : 1"
           rounded="3"
           icon="sidebar"
+          class="app-mr-32"
           @click="onSidebarToggleClick"
+        />
+        <AppInput
+          tag="select"
+          transparent
+          class="app-min-w-92"
+          :value="storeActivePreset.scale"
+          :options="defaultScaleOptions"
+          responsive
+          @change="storeUpdateActivePreset({ scale: parseInt($event) })"
         />
       </AppStack>
     </AppStack>
@@ -92,6 +102,7 @@
 import AppStack from '@ryaposov/essentials/AppStack.vue'
 import AppButton from '@ryaposov/essentials/AppButton.vue'
 import AppModal from '@ryaposov/essentials/AppModal.vue'
+import AppInput from '@ryaposov/essentials/AppInput.vue'
 
 import AppCanvasBottomBarPresets from './AppCanvasBottomBarPresets.vue'
 
@@ -103,12 +114,20 @@ export default {
     AppStack,
     AppButton,
     AppModal,
+    AppInput,
     AppCanvasBottomBarPresets
   },
   computed: {
+    defaultScaleOptions () {
+      return this.storeScales.map(scale => ({
+        text: scale.name,
+        value: scale.value
+      }))
+    },
     ...mapState({
       storeSidebarVisibility: state => state.sidebarVisibility,
-      storePresets: state => state.presets
+      storePresets: state => state.presets,
+      storeScales: state => state.scales
     }),
     ...mapGetters({
       storeActivePreset: 'activePreset'
@@ -133,6 +152,7 @@ export default {
       storeAddActivePresetScreen: 'addActivePresetScreen',
       storeAddPreset: 'addPreset',
       storeRemovePreset: 'removePreset',
+      storeUpdateActivePreset: 'updateActivePreset',
       storeUpdateSidebarVisibility: 'updateSidebarVisibility'
     }),
     ...mapMutations({

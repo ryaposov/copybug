@@ -1,14 +1,15 @@
 <template>
   <AppStack
+    :data-name="$NAME"
     direciton="row"
     wrap="wrap"
-    class=""
   >
     <template v-if="storeActivePreset.screens.length">
       <AppCanvasScreen
         v-for="screen in storeActivePreset.screens"
         :key="screen.id"
         :screen="screen"
+        :html="html"
         class="app-mr-28 app-mb-28"
         @remove="storeRemoveActivePresetScreen"
         @change="storeUpdateActivePresetScreen"
@@ -18,10 +19,7 @@
       direction="col"
       align="center"
       justify="center"
-      :style="storeActivePreset.screens.length ? {
-        width: storeActivePreset.screens[storeActivePreset.screens.length - 1].parameters.size.split('x')[0] + 'px',
-        height: storeActivePreset.screens[storeActivePreset.screens.length - 1].parameters.size.split('x')[1] + 'px',
-      } : {}"
+      :style="placeholderStyles"
       class="app-mt-36 app-overflow-hidden app-rounded-4 app-color-border-2 app-opacity-75
         app-border app-group app-w-320 app-h-600 hover:app-opacity-100 app-transition-opacity app-duration-100"
     >
@@ -84,7 +82,24 @@ export default {
     AppIcon,
     AppCanvasScreen
   },
+  data: () => ({
+    html: ''
+  }),
   computed: {
+    placeholderStyles () {
+      const lastScreen = this.storeActivePreset.screens.length ? [...this.storeActivePreset.screens].pop() : null
+      const scale = this.storeActivePreset.scale
+      let screenWidth = lastScreen ? parseInt(lastScreen.parameters.size.split('x')[0]) : 320
+      let screenHeight = lastScreen ? parseInt(lastScreen.parameters.size.split('x')[1]) : 480
+
+      screenWidth = (screenWidth * (scale / 100))
+      screenHeight = (screenHeight * (scale / 100))
+
+      return {
+        width: screenWidth + 'px',
+        height: screenHeight + 'px'
+      }
+    },
     ...mapGetters({
       storeActivePreset: 'activePreset'
     })

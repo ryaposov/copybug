@@ -22,7 +22,8 @@
           name="settings.mainUrl"
           :value="storeActivePreset.settings.mainUrl"
           responsive
-          @input="storeUpdateActivePresetSettings({ mainUrl: $event })"
+          @input="onSettingsMainUrlInput"
+          @focusout="onSettingsMainUrlFocusout"
         />
       </AppFormItem>
       <AppFormItem
@@ -120,14 +121,15 @@
               size="14"
               color="1"
               weight="regular"
-              class="app-border app-overflow-hidden app-rounded-4 app-color-border-transparent
+              class="app-relative app-border app-overflow-hidden app-rounded-4 app-color-border-transparent
               hover:app-color-border-1"
             >
               <input
+                ref="pageNameInput"
                 type="text"
                 :value="page.name"
-                class="app-outline-none app-px-4 app-pt-2"
-                :style="fluidInputStyle(page.name)"
+                class="app-outline-none app-px-4 app-pt-2 app-appearance-none app-color-bg-transparent"
+                :style="fluidInputStyle(page.name, 'pageNameInput')"
                 @input="storeUpdateActivePresetPage({ ...page, name: $event.target.value })"
               >
             </AppText>
@@ -135,14 +137,15 @@
               size="14"
               color="3"
               weight="regular"
-              class="app-border app-overflow-hidden app-rounded-4 app-color-border-transparent
+              class="app-relative app-border app-overflow-hidden app-rounded-4 app-color-border-transparent
               hover:app-color-border-1"
             >
               <input
+                ref="pagePathInput"
                 type="text"
                 :value="page.path"
-                class="app-outline-none app-px-4 app-pt-2"
-                :style="fluidInputStyle(page.path)"
+                class="app-outline-none app-px-4 app-pt-2 app-appearance-none app-color-bg-transparent"
+                :style="fluidInputStyle(page.path, 'pagePathInput')"
                 @input="storeUpdateActivePresetPage({ ...page, path: $event.target.value })"
               >
             </AppText>
@@ -221,19 +224,45 @@
           value: language.value
         }))
       },
+      defaultScaleOptions () {
+        return this.storeScales.map(scale => ({
+          text: scale.name,
+          value: scale.value
+        }))
+      },
       ...mapState({
         storeDevices: state => state.devices,
         storePlatforms: state => state.platforms,
-        storeLanguages: state => state.languages
+        storeLanguages: state => state.languages,
+        storeScales: state => state.scales
       }),
       ...mapGetters({
         storeActivePreset: 'activePreset'
       })
     },
     methods: {
-      fluidInputStyle (string) {
+      onSettingsMainUrlInput (value) {
+        const url = new URL(value)
+
+        this.storeUpdateActivePresetSettings({ mainUrl: url.origin })
+      },
+      onSettingsMainUrlFocusout (value) {
+        // const url = new URL(value)
+        // console.log(url)
+
+        // this.storeUpdateActivePresetSettings({ mainUrl: value })
+      },
+      fluidInputStyle (string, ref) {
+        const numUpper = (string.match(/[A-Z]/g) || []).length
+        const numLower = string.length - numUpper
+        const width = (numUpper * 10.5) + (numLower * 8)
+
+        // if (this.$refs[ref]) {
+        //   console.log(this.$refs[ref].scrollLeft)
+        // }
+
         return {
-          width: (string.length * 7 + 8) + 'px'
+          width: (width + 8) + 'px'
         }
       },
       ...mapActions({

@@ -10,6 +10,8 @@
   "dependencies": {
     "body-scroll-lock": "^3.1.5",
     "dayjs": "^1.9.6",
+    "js-cookie": "^2.2.1",
+    "ky": "^0.25.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
     "tailwindcss": "^1.9.6",

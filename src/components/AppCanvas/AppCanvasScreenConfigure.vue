@@ -14,9 +14,7 @@
         class="app-cursor-pointer"
         @click="$emit('active-parameter-change', activeParameter === key ? false : key)"
       >
-        <AppStack
-          align="center"
-        >
+        <AppStack align="center">
           <AppIcon
             :icon="activeParameter === key ? 'chevron-down' : 'chevron-right'"
             size="14"

@@ -59,7 +59,7 @@ import AppStack from '@ryaposov/essentials/AppStack.vue'
 import AppHeading from '@ryaposov/essentials/AppHeading.vue'
 import AppText from '@ryaposov/essentials/AppText.vue'
 
-import dayjs from 'dayjs/esm/index.js'
+import dayjs from 'dayjs'
 
 export default {
   name: 'AppCanvasBottomBarPresets',

@@ -21,7 +21,9 @@ import AppStack from '@ryaposov/essentials/AppStack.vue'
 import AppSidebar from '/~/components/AppSidebar/index.vue'
 import AppCanvas from '/~/components/AppCanvas/index.vue'
 
-import { mapState, mapActions } from 'vuex'
+import { debounce } from '/~/plugins/helpers.js'
+import { mapState, mapGetters, mapActions } from 'vuex'
+import Cookies from 'js-cookie'
 
 export default {
   name: 'App',
@@ -30,9 +32,6 @@ export default {
     AppSidebar,
     AppCanvas
   },
-  data: () => ({
-    
-  }),
   computed: {
     canvasClasses () {
       return [
@@ -42,9 +41,32 @@ export default {
         }[this.storeSidebarVisibility]
       ]
     },
+    path () {
+      return this.storeActivePreset.pages.length ? 
+        this.storeActivePreset.pages.find(page => this.storeActivePreset.activePageId === page.id).path : ''
+    },
+    url () {
+      return this.storeActivePreset.mainUrl
+    },
+    fullUrl () {
+      return this.url + this.path
+    },
     ...mapState({
       storeSidebarVisibility: state => state.sidebarVisibility,
+    }),
+    ...mapGetters({
+      storeActivePreset: 'activePreset',
     })
+  },
+  watch: {
+    'storeActivePreset.settings.mainUrl': function (newValue, oldValue) {
+      this.changeMainUrlCookie(newValue + this.path)
+    }
+  },
+  methods: {
+    changeMainUrlCookie: debounce(function (value) {
+      Cookies.set('mainUrl', value, { expires: 365 })
+    }, 500)
   }
 }
 </script>

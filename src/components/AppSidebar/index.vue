@@ -24,7 +24,7 @@
       class="app-mt-auto"
     >
       <AppSidebarScreensPages
-        v-if="storeActiveSidebarTab === 'screens' && storeActivePreset.activePageId"
+        v-if="storeActiveSidebarTab === 'screens' && storeActivePreset.pages.length > 1 && storeActivePreset.activePageId"
         class="app-px-20"
       />
       <AppStack class="app-px-20 app-py-20">

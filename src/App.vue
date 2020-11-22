@@ -60,7 +60,7 @@ export default {
   },
   watch: {
     'storeActivePreset.settings.mainUrl': function (newValue, oldValue) {
-      this.changeMainUrlCookie(newValue + this.path)
+      this.changeMainUrlCookie(newValue)
     }
   },
   methods: {

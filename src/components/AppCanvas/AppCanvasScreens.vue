@@ -8,14 +8,17 @@
       <AppCanvasScreen
         v-for="screen in storeActivePreset.screens"
         :key="screen.id"
+        :ref="setCanvasScreenRefs"
         :screen="screen"
-        :html="html"
         class="app-mr-28 app-mb-28"
         @remove="storeRemoveActivePresetScreen"
         @change="storeUpdateActivePresetScreen"
+        @mouseover="controlledScreenId = screen.id"
+        @mouseout="controlledScreenId = null"
       />
     </template>
     <AppStack
+      v-else
       direction="col"
       align="center"
       justify="center"
@@ -71,8 +74,9 @@ import AppStack from '@ryaposov/essentials/AppStack.vue'
 import AppText from '@ryaposov/essentials/AppText.vue'
 import AppIcon from '@ryaposov/essentials/AppIcon.vue'
 import AppCanvasScreen from './AppCanvasScreen.vue'
+import jsReplay from '/~/plugins/js-replay.js'
 
-import { mapGetters, mapActions } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'AppCanvasScreens',
@@ -83,7 +87,8 @@ export default {
     AppCanvasScreen
   },
   data: () => ({
-    html: ''
+    controlledScreenId: null,
+    canvasScreens: {},
   }),
   computed: {
     placeholderStyles () {
@@ -100,11 +105,53 @@ export default {
         height: screenHeight + 'px'
       }
     },
+    ...mapState({
+      storeReplicateEvents: state => state.replicateEvents,
+    }),
     ...mapGetters({
       storeActivePreset: 'activePreset'
     })
   },
+  watch: {
+    'storeActivePreset.screens' (newVal, oldValue) {
+      this.$nextTick(() => {
+        if (newVal.length < oldValue.length) {
+          const existingKeys = newVal.map(item => item.id)
+          const missingKeys = Object.keys(this.canvasScreens).filter(key => !existingKeys.includes(key))
+          missingKeys.forEach(key => delete this.canvasScreens[key])
+        }
+      })
+    }
+  },
+  mounted () {
+    window.addEventListener('message', this.onMessage, false)
+  },
   methods: {
+    onMessage (e) {
+      if (!e.data.manual && e.data.isTrusted || e.data.type === 'scroll') {
+        if (this.controlledScreenId !== e.data.iframeId) return
+
+        console.log('parent recieved a message:', e, e.data)
+      
+        if (this.storeReplicateEvents) {
+          Object.keys(this.canvasScreens).forEach(key => {
+            const screen = this.storeActivePreset.screens.find(screen => screen.id === key)
+  
+            if (e.data.iframeId !== screen.id) {
+              this.canvasScreens[key].iframe.contentWindow.postMessage(e.data, this.$PROXY_URL)
+            }
+          })
+        }
+
+      } else if (e.data.manual) {
+        if (e.data.type === 'ready') {
+          
+        }
+      }
+    },
+    setCanvasScreenRefs (ref) {
+      this.canvasScreens[ref.screen.id] = ref
+    },
     ...mapActions({
       storeRemoveActivePresetScreen: 'removeActivePresetScreen',
       storeAddActivePresetScreen: 'addActivePresetScreen',

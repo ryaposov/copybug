@@ -58,6 +58,7 @@
           rounded="3"
           text="Reload"
           icon="refresh"
+          @click="onReloadClick"
         />
       </AppStack>
       <AppStack>
@@ -66,23 +67,24 @@
           weight="semibold"
           type="framed"
           bg="1"
-          color="1"
+          :color="storeReplicateEvents ? 1 : 4"
+          :border="storeReplicateEvents ? 3 : 1"
           rounded="3"
-          border="opposite"
-          icon="edit"
+          icon="magic-wand"
           class="app-mr-8"
+          @click="storeUpdateReplicateEvents(!storeReplicateEvents)"
         />
         <AppButton
           size="14"
           weight="semibold"
           type="framed"
           bg="1"
-          :color="storeSidebarVisibility ? 1 : 2"
-          :border="storeSidebarVisibility ? 'opposite' : 1"
+          :color="storeSidebarVisibility ? 1 : 4"
+          :border="storeSidebarVisibility ? 3 : 1"
           rounded="3"
           icon="sidebar"
           class="app-mr-32"
-          @click="onSidebarToggleClick"
+          @click="storeUpdateSidebarVisibility(!storeSidebarVisibility)"
         />
         <AppInput
           tag="select"
@@ -126,6 +128,7 @@ export default {
     },
     ...mapState({
       storeSidebarVisibility: state => state.sidebarVisibility,
+      storeReplicateEvents: state => state.replicateEvents,
       storePresets: state => state.presets,
       storeScales: state => state.scales
     }),
@@ -145,15 +148,16 @@ export default {
     onPresetRemove (id) {
       this.storeRemovePreset(id)
     },
-    onSidebarToggleClick () {
-      this.storeUpdateSidebarVisibility(!this.storeSidebarVisibility)
+    onReloadClick () {
+      this.emitter.emit('iframes-reload')
     },
     ...mapActions({
       storeAddActivePresetScreen: 'addActivePresetScreen',
       storeAddPreset: 'addPreset',
       storeRemovePreset: 'removePreset',
       storeUpdateActivePreset: 'updateActivePreset',
-      storeUpdateSidebarVisibility: 'updateSidebarVisibility'
+      storeUpdateSidebarVisibility: 'updateSidebarVisibility',
+      storeUpdateReplicateEvents: 'updateReplicateEvents'
     }),
     ...mapMutations({
       storeSetActivePresetId: 'setActivePresetId'

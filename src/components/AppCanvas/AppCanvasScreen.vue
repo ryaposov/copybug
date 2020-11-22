@@ -1,9 +1,7 @@
 <template>
   <div
     class="app-relative app-select-none"
-    :style="{
-      width: scaledScreenSize.width + 'px'
-    }"
+    :style="{ width: scaledScreenSize.width + 'px' }"
   >
     <AppCanvasScreenBar
       :screen="screen"
@@ -12,15 +10,26 @@
       @configure="configure = !configure"
       @parameter-select="onParameterSelect"
     />
-    <div class="app-relative app-color-bg-1 app-overflow-hidden app-rounded-4 app-color-border-1 app-border">
+    <div class="app-relative app-color-bg-1 app-overflow-hidden app-rounded-4 app-overflow-hidden app-color-border-1 app-border">
       <div
-        ref="iframe"
+        ref="iframeContainer"
         :style="{
           width: scaledScreenSize.width + 'px',
           height: scaledScreenSize.height + 'px',
         }"
       >
+        <template v-if="loading">
+          <div class="app-absolute app-z-10 app-top-0 app-left-0 app-w-full app-h-full app-color-bg-1 app-opacity-90" />
+          <div class="app-absolute app-z-10 app-top-1/2 app-left-1/2 app-transform app--translate-x-1/2 app--translate-y-1/2">
+            <AppIcon
+              icon="refresh"
+              size="40"
+              class="app-animate-spin app-opacity-50"
+            />
+          </div>
+        </template>
         <iframe
+          ref="iframe"
           v-bind="iframeProps"
         />
       </div>
@@ -37,18 +46,17 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-
+import AppIcon from '@ryaposov/essentials/AppIcon.vue'
 import AppCanvasScreenBar from './AppCanvasScreenBar.vue'
 import AppCanvasScreenConfigure from './AppCanvasScreenConfigure.vue'
 
 import { mapGetters } from 'vuex'
-
-import boldkingCode from './boldking.js'
+import { debounce } from '/~/plugins/helpers.js'
 
 export default {
   name: 'AppCanvasScreen',
   components: {
+    AppIcon,
     AppCanvasScreenBar,
     AppCanvasScreenConfigure
   },
@@ -60,10 +68,16 @@ export default {
     html: {
       type: String,
       default: ''
-    }
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    },
   },
   emits: ['remove', 'change'],
   data: () => ({
+    iframe: null,
+    iframeSrc: null,
     configure: false,
     activeParameter: 'size'
   }),
@@ -86,9 +100,10 @@ export default {
       const multiplier = this.scaledScreenSize.width / (this.scaledScreenSize.width * (scale / 100))
 
       return {
-        src: this.$PROXY_URL + (this.storeActivePage ? this.storeActivePage.path : ''),
+        src: this.iframeSrc,
         sandbox: 'allow-same-origin allow-scripts allow-forms',
         referrerPolicy: 'no-referrer',
+        dataId: this.screen.id,
         width: '100%',
         height: '100%',
         style: {
@@ -101,12 +116,49 @@ export default {
         }
       }
     },
+    iframeCleanSrc () {
+      try {
+        const url = new URL(this.$PROXY_URL + (this.storeActivePage ? this.storeActivePage.path : ''))
+        url.searchParams.append('iframeId', this.screen.id)
+
+        return url.href
+      } catch (error) {
+        console.log(error)
+
+        return null
+      }
+    },
     ...mapGetters({
       storeActivePreset: 'activePreset',
       storeActivePage: 'activePage'
     }),
   },
+  watch: {
+    storeActivePage (newValue, oldValue) {
+      this.setIframeSrc(newValue)
+    }
+  },
+  mounted () {
+    this.iframe = this.$refs.iframe
+    this.setIframeSrc(this.storeActivePage)
+    this.subscribeToGlobalEvents()
+  },
   methods: {
+    setIframeSrcWithDebounce: debounce(function (page) {
+      this.setIframeSrc()
+    }, 2000),
+    setIframeSrc (page) {
+      this.iframeSrc = this.iframeCleanSrc
+    },
+    subscribeToGlobalEvents () {
+      this.emitter.on('iframes-reload', this.reloadIframe)
+    },
+    reloadIframe () {
+      const page = this.storeActivePage
+      this.iframeSrc = null
+      this.$nextTick(this.setIframeSrc)
+      // this.iframe.contentWindow.postMessage('reload', this.$PROXY_URL)
+    },
     onParameterChange ($event) {
       this.$emit('change', { ...this.screen, parameters: { ...this.screen.parameters, ...$event }})
       this.configure = false

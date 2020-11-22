@@ -81,18 +81,6 @@
         />
       </AppFormItem>
       <AppFormItem
-        prop="settings.scrollPanesTogether"
-        class="app-mb-16"
-      >
-        <AppCheckbox
-          name="settings.scrollPanesTogether"
-          label="Scroll Panes Together"
-          :checked="storeActivePreset.settings.scrollPanesTogether"
-          responsive
-          @change="storeUpdateActivePresetSettings({ scrollPanesTogether: $event })"
-        />
-      </AppFormItem>
-      <AppFormItem
         label="Pages"
         prop="pages"
         class="app-mb-16"
@@ -247,10 +235,7 @@
         this.storeUpdateActivePresetSettings({ mainUrl: url.origin })
       },
       onSettingsMainUrlFocusout (value) {
-        // const url = new URL(value)
-        // console.log(url)
-
-        // this.storeUpdateActivePresetSettings({ mainUrl: value })
+        
       },
       fluidInputStyle (string, ref) {
         const numUpper = (string.match(/[A-Z]/g) || []).length

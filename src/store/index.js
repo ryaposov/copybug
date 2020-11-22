@@ -8,12 +8,13 @@ const generateId = (length = 3) => {
 
 const store = createStore({
   plugins: [createPersistedState({
-    paths: ['presets', 'activePresetId', 'sidebarVisibility']
+    paths: ['presets', 'activePresetId', 'sidebarVisibility', 'replicateEvents', 'activeSidebarTab']
   })],
   state () {
     return {
       activeSidebarTab: 'screens',
       sidebarVisibility: true,
+      replicateEvents: false,
       activePresetId: null,
       presets: {},
       devices: [
@@ -161,6 +162,9 @@ const store = createStore({
     updateSidebarVisibility ({ commit }, payload) {
       commit('setSidebarVisibility', payload)
     },
+    updateReplicateEvents ({ commit }, payload) {
+      commit('setReplicateEvents', payload)
+    },
     addPreset ({ commit, state }, payload) {
       const id = generateId()
       const preset = payload || {
@@ -173,8 +177,7 @@ const store = createStore({
           defaultSize: null,
           defaultPlatform: 'gb',
           defaultLanguage: 'gb',
-          ignoreBrowserUi: false,
-          scrollPanesTogether: false
+          ignoreBrowserUi: false
         },
         scale: 100,
         screens: [],
@@ -289,6 +292,9 @@ const store = createStore({
     },
     setSidebarVisibility (state, payload) {
       state.sidebarVisibility = payload
+    },
+    setReplicateEvents (state, payload) {
+      state.replicateEvents = payload
     },
     createPreset (state, payload) {
       state.presets[payload.id] = { ...payload }

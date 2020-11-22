@@ -10,10 +10,12 @@
   "dependencies": {
     "body-scroll-lock": "^3.1.5",
     "dayjs": "^1.9.6",
+    "jquery": "^3.5.1",
     "js-cookie": "^2.2.1",
     "ky": "^0.25.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
+    "mitt": "^2.1.0",
     "tailwindcss": "^1.9.6",
     "vue": "^3.0.0-rc.1",
     "vue-router": "^4.0.0-beta.13",

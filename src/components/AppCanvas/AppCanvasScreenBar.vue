@@ -41,7 +41,7 @@
             app-opacity-25 last:app-hidden"
           />
           <template
-            v-for="(parameter, key) in ({ size: screen.parameters.size, platform: screen.parameters.platform, language: screen.parameters.language })"
+            v-for="(parameter, key) in parameters(screen)"
             :key="key"
           >
             <AppText
@@ -95,7 +95,15 @@ export default {
       default: false
     }
   },
-  emits: ['remove', 'configure', 'parameter-select']
+  emits: ['remove', 'configure', 'parameter-select'],
+  methods: {
+    parameters (screen) {
+      const parameters = { size: screen.parameters.size }
+      if (screen.parameters.language) parameters.language = screen.parameters.language
+
+      return parameters
+    }
+  }
 }
 </script>
 

@@ -141,6 +141,9 @@ const store = createStore({
     activePreset (state) {
       return state.presets[state.activePresetId]
     },
+    activePresetCleanMainUrl (state) {
+      return state.presets[state.activePresetId].settings.mainUrl.replace('[', '').replace(']', '')
+    },
     activePage (state, getters) {
       return getters.activePreset.pages.find(page => page.id === getters.activePreset.activePageId)
     },
@@ -175,13 +178,15 @@ const store = createStore({
         settings: {
           mainUrl: this.$PROXY_URL,
           defaultSize: null,
-          defaultPlatform: 'gb',
-          defaultLanguage: 'gb',
-          ignoreBrowserUi: false
+          // defaultPlatform: 'gb', 
+          defaultLanguage: null,
+          ignoreBrowserUi: false,
+          languageRegex: ''
         },
         scale: 100,
         screens: [],
-        pages: []
+        pages: [],
+        languages: []
       }
 
       commit('createPreset', preset)
@@ -212,7 +217,7 @@ const store = createStore({
           size: lastDevice.value,
           device: lastDevice.name,
           platform: activePreset.settings.defaultPlatform,
-          language: activePreset.settings.defaultLanguage
+          ...(activePreset.settings.defaultLanguage ? { language: activePreset.settings.defaultLanguage } : {})
         },
         id: generateId(7)
       }
@@ -247,9 +252,34 @@ const store = createStore({
 
       commit('patchPreset', { key: state.activePresetId, payload: { screens: activePresetScreens } })
     },
+    addActivePresetLanguage ({ state, commit, getters: { activePreset }}, language) {
+      const activePresetLanguages = JSON.parse(JSON.stringify(activePreset.languages || []))
+      const newLanguage = { id: generateId(3), name: 'English', value: 'en-gb' }
+      const newLanguages = [...activePresetLanguages, newLanguage]
+
+      commit('patchPreset', { key: state.activePresetId, payload: { languages: newLanguages } })
+    },
+    removeActivePresetLanguage ({ state, dispatch, commit, getters }, id) {
+      const activePresetLanguages = JSON.parse(JSON.stringify(getters.activePreset.languages))
+      const languageIndex = activePresetLanguages.findIndex(item => item.id === id)
+      activePresetLanguages.splice(languageIndex, 1)
+
+      if (!activePresetLanguages.length) {
+        dispatch('updateActivePresetSettings', { defaultLanguage: null })
+      }
+
+      commit('patchPreset', { key: state.activePresetId, payload: { languages: activePresetLanguages } })
+    },
+    updateActivePresetLanguage ({ state, commit, getters }, language) {
+      const activePresetLanguages = JSON.parse(JSON.stringify(getters.activePreset.languages))
+      const languageIndex = activePresetLanguages.findIndex(item => item.id === language.id)
+      activePresetLanguages.splice(languageIndex, 1, language)
+
+      commit('patchPreset', { key: state.activePresetId, payload: { languages: activePresetLanguages } })
+    },
     addActivePresetPage ({ state, commit, getters: { activePreset }}, page) {
       const activePresetPages = JSON.parse(JSON.stringify(activePreset.pages || []))
-      const newPage = { id: generateId(3), name: 'New Page ' + (activePresetPages.length + 1), path: '/page-' + (activePresetPages.length + 1) }
+      const newPage = { id: generateId(3), name: 'New Page ' + (activePresetPages.length + 1), value: '/page-' + (activePresetPages.length + 1) }
       const newPages = [...activePresetPages, newPage]
       commit('patchPreset', { key: state.activePresetId, payload: {
         pages: newPages,

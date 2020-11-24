@@ -41,25 +41,26 @@ export default {
         }[this.storeSidebarVisibility]
       ]
     },
-    path () {
+    value () {
       return this.storeActivePreset.pages.length ? 
-        this.storeActivePreset.pages.find(page => this.storeActivePreset.activePageId === page.id).path : ''
+        this.storeActivePreset.pages.find(page => this.storeActivePreset.activePageId === page.id).value : ''
     },
     url () {
       return this.storeActivePreset.mainUrl
     },
     fullUrl () {
-      return this.url + this.path
+      return this.url + this.value
     },
     ...mapState({
       storeSidebarVisibility: state => state.sidebarVisibility,
     }),
     ...mapGetters({
+      storeActivePresetCleanMainUrl: 'activePresetCleanMainUrl',
       storeActivePreset: 'activePreset',
     })
   },
   watch: {
-    'storeActivePreset.settings.mainUrl': function (newValue, oldValue) {
+    storeActivePresetCleanMainUrl: function (newValue, oldValue) {
       this.changeMainUrlCookie(newValue)
     }
   },

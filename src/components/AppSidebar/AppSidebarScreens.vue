@@ -19,6 +19,31 @@
           @remove="storeRemoveActivePresetScreen"
           @click="$emit('change', screen)"
         />
+        <li
+          class="app-group app-relative app-cursor-pointer 
+      app-mb-4 app-px-20 app-py-12
+      last:app-mb-initial hover:app-color-bg-2"
+          @click="storeAddActivePresetScreen"
+        > 
+          <AppStack
+            align="center"
+            class="app-relative app--left-2"
+          >
+            <AppIcon
+              icon="plus"
+              size="16"
+              color="3"
+              class="app-mr-8 app-relative app--top-2"
+            />
+            <AppText
+              text="Add Screen"
+              size="14"
+              weight="semibold"
+              color="3"
+              class="app-mr-8"
+            />
+          </AppStack>
+        </li>
       </template>
     </AppStack>
   </nav>
@@ -26,6 +51,8 @@
 
 <script>
   import AppStack from '@ryaposov/essentials/AppStack.vue'
+  import AppText from '@ryaposov/essentials/AppText.vue'
+  import AppIcon from '@ryaposov/essentials/AppIcon.vue'
   
   import AppSidebarPlug from './AppSidebarPlug.vue'
   import AppSidebarScreen from './AppSidebarScreen.vue'
@@ -36,6 +63,8 @@
     name: 'AppSidebarScreens',
     components: {
       AppStack,
+      AppText,
+      AppIcon,
       AppSidebarPlug,
       AppSidebarScreen
     },

@@ -13,12 +13,12 @@
           weight="semibold"
           class="app-mr-8"
         />
-        <AppText
+        <!-- <AppText
           :text="screen.parameters.size"
           size="14"
           weight="regular"
           color="3"
-        />
+        /> -->
       </AppStack>
       <AppStack
         align="center"
@@ -32,7 +32,7 @@
             :text="screen.parameters[parameter]"
             size="14"
             weight="regular"
-            color="2"
+            color="3"
           />
           <span
             class="app-mx-4 app-h-2 app-w-4 app-color-bg-opposite
@@ -45,20 +45,6 @@
       class="app-opacity-0 app-absolute app-right-20 app-top-12
             group-hover:app-opacity-100"
     >
-      <!-- <AppIcon
-        icon="settings"
-        size="16"
-        color="3"
-        hover-color="2"
-        class="app-mr-12"
-      />
-      <AppIcon
-        icon="target"
-        size="16"
-        color="3"
-        hover-color="2"
-        class="app-mr-20"
-      /> -->
       <AppIcon
         icon="remove"
         size="16"
@@ -91,7 +77,7 @@ export default {
   emits: ['change', 'remove'],
   computed: {
     parameters () {
-      const parameters = ['language', 'platform']
+      const parameters = ['size', 'language', /* 'platform' */]
 
       if (screen.name) parameters.unshift('device')
 

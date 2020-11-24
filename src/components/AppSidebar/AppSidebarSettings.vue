@@ -1,4 +1,4 @@
-<template>
+AppSide<template>
   <nav :data-name="$NAME">
     <AppForm class="app-select-none app-w-260">
       <AppFormItem
@@ -23,7 +23,18 @@
           :value="storeActivePreset.settings.mainUrl"
           responsive
           @input="onSettingsMainUrlInput"
-          @focusout="onSettingsMainUrlFocusout"
+        />
+      </AppFormItem>
+      <AppFormItem
+        label="Language Regex"
+        prop="settings.languageRegex"
+        class="app-mb-20"
+      >
+        <AppInput
+          name="settings.languageRegex"
+          :value="storeActivePreset.settings.languageRegex"
+          responsive
+          @input="storeUpdateActivePresetSettings({ languageRegex: $event })"
         />
       </AppFormItem>
       <AppFormItem
@@ -40,7 +51,7 @@
           @input="storeUpdateActivePresetSettings({ defaultSize: $event })"
         />
       </AppFormItem>
-      <AppFormItem
+      <!-- <AppFormItem
         label="Default Platform"
         prop="settings.defaultPlatform"
         class="app-mb-20"
@@ -53,8 +64,9 @@
           responsive
           @input="storeUpdateActivePresetSettings({ defaultPlatform: $event })"
         />
-      </AppFormItem>
+      </AppFormItem> -->
       <AppFormItem
+        v-if="storeActivePreset.languages.length"
         label="Default Language"
         prop="settings.defaultLanguage"
         class="app-mb-20"
@@ -81,88 +93,28 @@
         />
       </AppFormItem>
       <AppFormItem
+        label="Languages"
+        prop="languages"
+        class="app-mb-16"
+      >
+        <AppSidebarSettingsList
+          :list="storeActivePreset.languages"
+          @add="storeAddActivePresetLanguage"
+          @remove="storeRemoveActivePresetLanguage($event)"
+          @input="storeUpdateActivePresetLanguage($event)"
+        />
+      </AppFormItem>
+      <AppFormItem
         label="Pages"
         prop="pages"
         class="app-mb-16"
       >
-        <div class="app-mb-8">
-          <AppStack
-            v-for="(page, index) in storeActivePreset.pages"
-            :key="index"
-            align="center"
-            class="app-mb-4 last:app-mb-initial"
-          >
-            <AppStack
-              align="center"
-              justify="center"
-              class="app-cursor-pointer app-w-16 app-h-16 app-color-bg-2 app-mr-4 app-rounded-4
-              app-transition-opacity app-duration-100 hover:app-opacity-75"
-              @click="storeRemoveActivePresetPage(index)"
-            >
-              <AppIcon
-                size="10"
-                color="3"
-                icon="minus"
-              />
-            </AppStack>
-            <AppText
-              size="14"
-              color="1"
-              weight="regular"
-              class="app-relative app-border app-overflow-hidden app-rounded-4 app-color-border-transparent
-              hover:app-color-border-1"
-            >
-              <input
-                ref="pageNameInput"
-                type="text"
-                :value="page.name"
-                class="app-outline-none app-px-4 app-pt-2 app-appearance-none app-color-bg-transparent"
-                :style="fluidInputStyle(page.name, 'pageNameInput')"
-                @input="storeUpdateActivePresetPage({ ...page, name: $event.target.value })"
-              >
-            </AppText>
-            <AppText
-              size="14"
-              color="3"
-              weight="regular"
-              class="app-relative app-border app-overflow-hidden app-rounded-4 app-color-border-transparent
-              hover:app-color-border-1"
-            >
-              <input
-                ref="pagePathInput"
-                type="text"
-                :value="page.path"
-                class="app-outline-none app-px-4 app-pt-2 app-appearance-none app-color-bg-transparent"
-                :style="fluidInputStyle(page.path, 'pagePathInput')"
-                @input="storeUpdateActivePresetPage({ ...page, path: $event.target.value })"
-              >
-            </AppText>
-          </AppStack>
-        </div>
-        <AppStack
-          class="app-cursor-pointer app-transition-opacity app-duration-100 hover:app-opacity-75"
-          align="center"
-          @click="storeAddActivePresetPage"
-        >
-          <AppStack
-            align="center"
-            justify="center"
-            class="app-relative app--top-1 app-w-16 app-h-16 app-mr-8 app-border app-color-border-brand app-rounded-4"
-          >
-            <AppIcon
-              size="10"
-              color="brand"
-              icon="plus"
-            />
-          </AppStack>
-          <AppText
-            size="14"
-            color="brand"
-            text="Add Page"
-            weight="regular"
-            class="app-mr-4"
-          />
-        </AppStack>
+        <AppSidebarSettingsList
+          :list="storeActivePreset.pages"
+          @add="storeAddActivePresetPage"
+          @remove="storeRemoveActivePresetPage($event)"
+          @input="storeUpdateActivePresetPage($event)"
+        />
       </AppFormItem>
     </AppForm>
   </nav>
@@ -173,9 +125,7 @@
   import AppFormItem from '@ryaposov/essentials/AppFormItem.vue'
   import AppInput from '@ryaposov/essentials/AppInput.vue'
   import AppCheckbox from '@ryaposov/essentials/AppCheckbox.vue'
-  import AppStack from '@ryaposov/essentials/AppStack.vue'
-  import AppIcon from '@ryaposov/essentials/AppIcon.vue'
-  import AppText from '@ryaposov/essentials/AppText.vue'
+  import AppSidebarSettingsList from './AppSidebarSettingsList.vue'
 
   import { mapState, mapGetters, mapActions } from 'vuex'
 
@@ -186,9 +136,7 @@
       AppFormItem,
       AppInput,
       AppCheckbox,
-      AppStack,
-      AppIcon,
-      AppText
+      AppSidebarSettingsList
     },
     computed: {
       defaultSizeOptions () {
@@ -200,14 +148,14 @@
           value: device.value
         }))]
       },
-      defaultPlatformOptions () {
-        return this.storePlatforms.map(platform => ({
-          text: platform.name,
-          value: platform.value
-        }))
-      },
+      // defaultPlatformOptions () {
+      //   return this.storePlatforms.map(platform => ({
+      //     text: platform.name,
+      //     value: platform.value
+      //   }))
+      // },
       defaultLanguageOptions () {
-        return this.storeLanguages.map(language => ({
+        return this.storeActivePreset.languages.map(language => ({
           text: language.name,
           value: language.value
         }))
@@ -220,7 +168,7 @@
       },
       ...mapState({
         storeDevices: state => state.devices,
-        storePlatforms: state => state.platforms,
+        // storePlatforms: state => state.platforms,
         storeLanguages: state => state.languages,
         storeScales: state => state.scales
       }),
@@ -230,32 +178,20 @@
     },
     methods: {
       onSettingsMainUrlInput (value) {
-        const url = new URL(value)
-
-        this.storeUpdateActivePresetSettings({ mainUrl: url.origin })
+        this.storeUpdateActivePresetSettings({ mainUrl: value })
       },
       onSettingsMainUrlFocusout (value) {
         
-      },
-      fluidInputStyle (string, ref) {
-        const numUpper = (string.match(/[A-Z]/g) || []).length
-        const numLower = string.length - numUpper
-        const width = (numUpper * 10.5) + (numLower * 8)
-
-        // if (this.$refs[ref]) {
-        //   console.log(this.$refs[ref].scrollLeft)
-        // }
-
-        return {
-          width: (width + 8) + 'px'
-        }
       },
       ...mapActions({
         storeUpdateActivePreset: 'updateActivePreset',
         storeUpdateActivePresetSettings: 'updateActivePresetSettings',
         storeUpdateActivePresetPage: 'updateActivePresetPage',
         storeAddActivePresetPage: 'addActivePresetPage',
-        storeRemoveActivePresetPage: 'removeActivePresetPage'
+        storeRemoveActivePresetPage: 'removeActivePresetPage',
+        storeUpdateActivePresetLanguage: 'updateActivePresetLanguage',
+        storeAddActivePresetLanguage: 'addActivePresetLanguage',
+        storeRemoveActivePresetLanguage: 'removeActivePresetLanguage'
       })
     }
   }

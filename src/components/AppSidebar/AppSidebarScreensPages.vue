@@ -26,7 +26,7 @@
         size="14"
         color="3"
         weight="regular"
-        :text="page.path"
+        :text="page.value"
       />
     </AppStack>
   </div>

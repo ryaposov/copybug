@@ -59,7 +59,7 @@
           <AppText
             size="14"
             weight="regular"
-            html="Use different combinations <br>of language and platform."
+            html="Use different languages!"
             color="3"
             class="app-mt-4"
           />
@@ -74,7 +74,6 @@ import AppStack from '@ryaposov/essentials/AppStack.vue'
 import AppText from '@ryaposov/essentials/AppText.vue'
 import AppIcon from '@ryaposov/essentials/AppIcon.vue'
 import AppCanvasScreen from './AppCanvasScreen.vue'
-import jsReplay from '/~/plugins/js-replay.js'
 
 import { mapState, mapGetters, mapActions } from 'vuex'
 
@@ -150,7 +149,7 @@ export default {
       }
     },
     setCanvasScreenRefs (ref) {
-      this.canvasScreens[ref.screen.id] = ref
+      if (ref) this.canvasScreens[ref.screen.id] = ref
     },
     ...mapActions({
       storeRemoveActivePresetScreen: 'removeActivePresetScreen',

@@ -36,19 +36,7 @@
       </AppModal>
     </AppStack>
     <AppStack class="app-ml-auto">
-      <AppStack class="app-mr-32">
-        <AppButton
-          size="14"
-          weight="semibold"
-          type="framed"
-          bg="25"
-          color="1"
-          rounded="3"
-          text="Add Pane"
-          icon="plus"
-          class="app-mr-8"
-          @click="storeAddActivePresetScreen"
-        />
+      <AppStack class="app-mr-20">
         <AppButton
           size="14"
           weight="semibold"
@@ -83,13 +71,14 @@
           :border="storeSidebarVisibility ? 3 : 1"
           rounded="3"
           icon="sidebar"
-          class="app-mr-32"
+          class="app-mr-20"
           @click="storeUpdateSidebarVisibility(!storeSidebarVisibility)"
         />
         <AppInput
           tag="select"
           transparent
-          class="app-min-w-92"
+          class="app-min-w-80"
+          input-size="sm"
           :value="storeActivePreset.scale"
           :options="defaultScaleOptions"
           responsive

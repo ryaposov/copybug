@@ -42,11 +42,19 @@
         @parameter-change="onParameterChange"
       />
     </div>
+    <AppText
+      :text="iframeCleanPath"
+      size="14"
+      display="block"
+      color="3"
+      class="app-mt-8"
+    />
   </div>
 </template>
 
 <script>
 import AppIcon from '@ryaposov/essentials/AppIcon.vue'
+import AppText from '@ryaposov/essentials/AppText.vue'
 import AppCanvasScreenBar from './AppCanvasScreenBar.vue'
 import AppCanvasScreenConfigure from './AppCanvasScreenConfigure.vue'
 
@@ -57,6 +65,7 @@ export default {
   name: 'AppCanvasScreen',
   components: {
     AppIcon,
+    AppText,
     AppCanvasScreenBar,
     AppCanvasScreenConfigure
   },
@@ -116,16 +125,30 @@ export default {
         }
       }
     },
+    iframeCleanPath () {
+      const url = new URL(this.iframeCleanSrc)
+      url.searchParams.delete('iframeId')
+
+      return url.href.replace(this.$PROXY_URL, '')
+    },
     iframeCleanSrc () {
       try {
-        const url = new URL(this.$PROXY_URL + (this.storeActivePage ? this.storeActivePage.path : ''))
+        const dirtyUrl = this.$PROXY_URL + (this.storeActivePage ? this.storeActivePage.value : '')
+        const url = new URL(dirtyUrl)
         url.searchParams.append('iframeId', this.screen.id)
+        let href = url.href
 
-        return url.href
+        if (this.screen.parameters.language && this.storeActivePreset.languages && this.storeActivePreset.settings.languageRegex) {
+          const regex = new RegExp(this.storeActivePreset.settings.languageRegex)
+          const langToReplace = dirtyUrl.match(regex)[0].replace(/\//g, '')
+          href = href.replace(langToReplace, this.screen.parameters.language)
+        }
+
+        return href
       } catch (error) {
         console.log(error)
 
-        return null
+        return ''
       }
     },
     ...mapGetters({
@@ -136,6 +159,9 @@ export default {
   watch: {
     storeActivePage (newValue, oldValue) {
       this.setIframeSrc(newValue)
+    },
+    'screen.parameters.language' (newValue, oldValue) {
+      this.reloadIframe()
     }
   },
   mounted () {

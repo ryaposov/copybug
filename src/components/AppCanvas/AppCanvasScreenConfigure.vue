@@ -12,7 +12,7 @@
       <AppStack
         justify="between"
         class="app-cursor-pointer"
-        @click="$emit('active-parameter-change', activeParameter === key ? false : key)"
+        @click="onParameterHeadClick(key)"
       >
         <AppStack align="center">
           <AppIcon
@@ -37,7 +37,7 @@
         />
       </AppStack>
       <AppStack
-        v-if="activeParameter === key"
+        v-if="activeParameter === key && options[key].length"
         tag="ul"
         direction="col"
         class="app-pt-12"
@@ -73,7 +73,7 @@ import AppStack from '@ryaposov/essentials/AppStack.vue'
 import AppText from '@ryaposov/essentials/AppText.vue'
 import AppIcon from '@ryaposov/essentials/AppIcon.vue'
 
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: 'AppCanvasScreenConfigure',
@@ -96,7 +96,7 @@ export default {
   data: () => ({
     configs: {
       size: 'Size', 
-      platform: 'Platform',
+      // platform: 'Platform',
       language: 'Language'
     }
   }),
@@ -104,17 +104,22 @@ export default {
     options () {
       return {
         size: this.devices,
-        platform: this.platforms,
-        language: this.languages
+        // platform: this.platforms,
+        language: this.storeActivePreset.languages
       }
     },
+    ...mapGetters({
+      storeActivePreset: 'activePreset',
+    }),
     ...mapState({
       devices: state => state.devices,
-      platforms: state => state.platforms,
-      languages: state => state.languages
+      // platforms: state => state.platforms
     })
   },
   methods: {
+    onParameterHeadClick (key) {
+      this.$emit('active-parameter-change', this.activeParameter === key ? '' : key)
+    },
     onParameterClick (option, key) {
       const payload = {}
 

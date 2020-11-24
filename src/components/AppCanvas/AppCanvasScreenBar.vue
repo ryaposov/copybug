@@ -78,6 +78,8 @@ import AppStack from '@ryaposov/essentials/AppStack.vue'
 import AppIcon from '@ryaposov/essentials/AppIcon.vue'
 import AppText from '@ryaposov/essentials/AppText.vue'
 
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'AppCanvasScreenBar',
   components: {
@@ -96,10 +98,19 @@ export default {
     }
   },
   emits: ['remove', 'configure', 'parameter-select'],
+  computed: {
+    ...mapGetters({
+      storeActivePreset: 'activePreset'
+    }),
+  },
   methods: {
     parameters (screen) {
-      const parameters = { size: screen.parameters.size }
-      if (screen.parameters.language) parameters.language = screen.parameters.language
+      const parameters = {
+        size: screen.parameters.size,
+        ...((screen.parameters.language || this.storeActivePreset.settings.defaultLanguage) ? {
+          language: screen.parameters.language || this.storeActivePreset.settings.defaultLanguage
+        } : {})
+      }
 
       return parameters
     }

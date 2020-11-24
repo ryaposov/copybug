@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import { createApp } from 'vue'
 import createPersistedState from 'vuex-persistedstate'
+import { serverEndpoint } from '../plugins/vue-prototype'
 
 const generateId = (length = 3) => {
   return '_' + Math.random().toString(36).substr(2, length + 2)
@@ -176,7 +177,7 @@ const store = createStore({
         createdAt: new Date().getTime() / 1000,
         activePageId: null,
         settings: {
-          mainUrl: this.$PROXY_URL,
+          mainUrl: 'https://www.apple.com/',
           defaultSize: null,
           // defaultPlatform: 'gb', 
           defaultLanguage: null,
@@ -217,7 +218,7 @@ const store = createStore({
           size: lastDevice.value,
           device: lastDevice.name,
           platform: activePreset.settings.defaultPlatform,
-          ...(activePreset.settings.defaultLanguage ? { language: activePreset.settings.defaultLanguage } : {})
+          language: activePreset.settings.defaultLanguage || null
         },
         id: generateId(7)
       }
@@ -252,10 +253,14 @@ const store = createStore({
 
       commit('patchPreset', { key: state.activePresetId, payload: { screens: activePresetScreens } })
     },
-    addActivePresetLanguage ({ state, commit, getters: { activePreset }}, language) {
+    addActivePresetLanguage ({ state, dispatch, commit, getters: { activePreset }}, language) {
       const activePresetLanguages = JSON.parse(JSON.stringify(activePreset.languages || []))
-      const newLanguage = { id: generateId(3), name: 'English', value: 'en-gb' }
+      const newLanguage = { id: generateId(3), name: 'English', value: 'uk' }
       const newLanguages = [...activePresetLanguages, newLanguage]
+
+      if (!activePreset.settings.defaultLanguage) {
+        dispatch('updateActivePresetSettings', { defaultLanguage: 'uk' })
+      }
 
       commit('patchPreset', { key: state.activePresetId, payload: { languages: newLanguages } })
     },

@@ -26,13 +26,17 @@ AppSide<template>
         />
       </AppFormItem>
       <AppFormItem
+        v-if="storeActivePreset.languages.length"
         label="Language Regex"
         prop="settings.languageRegex"
+        :message="!storeActivePreset.languages.length ? 'Add pages first to auto-replace language' : ''"
         class="app-mb-20"
       >
         <AppInput
           name="settings.languageRegex"
           :value="storeActivePreset.settings.languageRegex"
+          :disabled="!storeActivePreset.languages.length"
+          placeholder="regexp"
           responsive
           @input="storeUpdateActivePresetSettings({ languageRegex: $event })"
         />

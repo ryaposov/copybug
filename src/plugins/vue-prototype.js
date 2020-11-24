@@ -1,15 +1,18 @@
 import { mapGetters } from 'vuex'
 
+export const appEndpoint = process.env.NODE_ENV === 'development' ? 'http://localhost:3030' : 'https://copybug.ryaposov.com'
+export const serverEndpoint = process.env.NODE_ENV === 'development' ? 'http://localhost:3032' : 'https://glassframe.ryaposov.com'
+
 export default {
   computed: {
     $APP_ICON_SPRITE_PATH () {
       return this.$DOMAIN + '/icons.svg'
     },
     $DOMAIN () {
-      return process.env.NODE_ENV === 'development' ? 'http://localhost:3030' : 'http://localhost:3030'
+      return appEndpoint
     },
     $PROXY_URL () {
-      return process.env.NODE_ENV === 'development' ? 'http://localhost:3032' : 'http://localhost:3032'
+      return serverEndpoint
     },
     $NAME () {
       return process.env.NODE_ENV === 'development' ? this.$options.name

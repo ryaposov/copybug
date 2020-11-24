@@ -130,7 +130,7 @@ export default {
       if (!e.data.manual && e.data.isTrusted || e.data.type === 'scroll') {
         if (this.controlledScreenId !== e.data.iframeId) return
 
-        console.log('parent recieved a message:', e, e.data)
+        // console.log('parent recieved a message:', e, e.data)
       
         if (this.storeReplicateEvents) {
           Object.keys(this.canvasScreens).forEach(key => {

@@ -78,7 +78,7 @@
       <AppText
         size="14"
         color="brand"
-        text="Add Page"
+        text="Add Item"
         weight="regular"
         class="app-mr-4"
       />

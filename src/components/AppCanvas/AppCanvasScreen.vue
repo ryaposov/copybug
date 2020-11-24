@@ -126,25 +126,31 @@ export default {
       }
     },
     iframeCleanPath () {
-      const url = new URL(this.iframeCleanSrc)
-      url.searchParams.delete('iframeId')
-
-      return url.href.replace(this.$PROXY_URL, '')
+      try {
+        const url = new URL(this.iframeCleanSrc)
+        return url.searchParams.get('pathUrl')
+      } catch (error) {
+        return ''
+      }
     },
     iframeCleanSrc () {
       try {
-        const dirtyUrl = this.$PROXY_URL + (this.storeActivePage ? this.storeActivePage.value : '')
+        const dirtyUrl = this.$PROXY_URL
         const url = new URL(dirtyUrl)
-        url.searchParams.append('iframeId', this.screen.id)
-        let href = url.href
+        let mainUrl = this.storeActivePreset.settings.mainUrl
+        let page = this.storeActivePage ? this.storeActivePage.value : ''
 
         if (this.screen.parameters.language && this.storeActivePreset.languages && this.storeActivePreset.settings.languageRegex) {
           const regex = new RegExp(this.storeActivePreset.settings.languageRegex)
-          const langToReplace = dirtyUrl.match(regex)[0].replace(/\//g, '')
-          href = href.replace(langToReplace, this.screen.parameters.language)
+          const langToReplace = page.match(regex) ? page.match(regex)[0].replace(/\//g, '') : ''
+          if (langToReplace) page = page.replace(langToReplace, this.screen.parameters.language) 
         }
 
-        return href
+        url.searchParams.append('mainUrl', mainUrl)
+        url.searchParams.append('pathUrl', page)
+        url.searchParams.append('iframeId', this.screen.id)
+
+        return url.href
       } catch (error) {
         console.log(error)
 

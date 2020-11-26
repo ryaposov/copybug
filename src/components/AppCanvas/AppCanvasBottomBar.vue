@@ -21,10 +21,11 @@
         color="1"
         rounded="3"
         href="#presets"
-        text="Load Preset"
+        text="Load"
+        class="app-mr-8"
       />
       <AppModal
-        ref="presetModal"
+        ref="loadPresetModal"
         anchor="presets"
       >
         <AppCanvasBottomBarPresets
@@ -32,6 +33,25 @@
           class="app-w-520 app-pb-80 app-px-60"
           @preset-select="onPresetSelect"
           @preset-remove="onPresetRemove"
+        />
+      </AppModal>
+      <AppButton
+        size="14"
+        weight="semibold"
+        type="framed"
+        bg="25"
+        color="1"
+        rounded="3"
+        href="#share-preset"
+        text="Share"
+      />
+      <AppModal
+        ref="sharePresetModal"
+        anchor="share-preset"
+      >
+        <AppCanvasBottomBarSharePreset
+          :preset="storeActivePreset"
+          class="app-w-520 app-pb-80 app-px-60"
         />
       </AppModal>
     </AppStack>
@@ -96,6 +116,7 @@ import AppModal from '@ryaposov/essentials/AppModal.vue'
 import AppInput from '@ryaposov/essentials/AppInput.vue'
 
 import AppCanvasBottomBarPresets from './AppCanvasBottomBarPresets.vue'
+import AppCanvasBottomBarSharePreset from './AppCanvasBottomBarSharePreset.vue'
 
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 
@@ -106,7 +127,8 @@ export default {
     AppButton,
     AppModal,
     AppInput,
-    AppCanvasBottomBarPresets
+    AppCanvasBottomBarPresets,
+    AppCanvasBottomBarSharePreset
   },
   computed: {
     defaultScaleOptions () {
@@ -132,7 +154,7 @@ export default {
     },
     onPresetSelect (id) {
       this.storeSetActivePresetId(id)
-      this.$refs.presetModal.close()
+      this.$refs.loadPresetModal.close()
     },
     onPresetRemove (id) {
       this.storeRemovePreset(id)

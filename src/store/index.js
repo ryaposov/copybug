@@ -170,24 +170,28 @@ const store = createStore({
       commit('setReplicateEvents', payload)
     },
     addPreset ({ commit, state }, payload) {
+      if (payload && payload.id) delete payload.id
+      
       const id = generateId()
-      const preset = payload || {
-        name: 'Custom Preset ' + id,
+      const preset = {
         id: id,
-        createdAt: new Date().getTime() / 1000,
-        activePageId: null,
-        settings: {
-          mainUrl: 'https://www.apple.com/',
-          defaultSize: null,
-          // defaultPlatform: 'gb', 
-          defaultLanguage: null,
-          ignoreBrowserUi: false,
-          languageRegex: ''
-        },
-        scale: 100,
-        screens: [],
-        pages: [],
-        languages: []
+        ...(payload || {
+          name: 'Custom Preset ' + id,
+          createdAt: new Date().getTime() / 1000,
+          activePageId: null,
+          settings: {
+            mainUrl: 'https://www.apple.com/',
+            defaultSize: null,
+            // defaultPlatform: 'gb', 
+            defaultLanguage: null,
+            ignoreBrowserUi: false,
+            languageRegex: ''
+          },
+          scale: 100,
+          screens: [],
+          pages: [],
+          languages: []
+        })
       }
 
       commit('createPreset', preset)
@@ -348,10 +352,23 @@ export default {
     // On startup, if there're not other preset
     // create new draft preset and set active preset ID
     if (!Object.keys(store.state.presets).length) {
-      return store.dispatch('addPreset')
-    } else {
-      return
+      await store.dispatch('addPreset')
     }
+
+    const url = new URL(window.location.href)
+    let preset = url.searchParams.get('preset')
+
+    if (preset) {
+      try {
+        preset = JSON.parse(preset)
+        const newPreset = await store.dispatch('addPreset', preset)
+        store.commit('setActivePresetId', newPreset.id)
+      } catch (error) {
+        console.log('Error parsing and setting preset from URL')
+      }
+    }
+
+    return
   }, 
   vuex: store
 }

@@ -20,7 +20,7 @@
     "vue": "^3.0.0-rc.1",
     "vue-router": "^4.0.0-beta.13",
     "vuex": "^4.0.0-beta.4",
-    "vuex-persistedstate": "^4.0.0-beta.1",
+    "vuex-persistedstate": "^4.0.0-beta.1"
   },
   "devDependencies": {
     "@ryaposov/essentials": "^0.0.1",

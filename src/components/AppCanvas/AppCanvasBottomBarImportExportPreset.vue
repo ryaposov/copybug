@@ -53,7 +53,7 @@
         >
           {{ presetString }}
         </AppText>
-         <AppIcon
+        <AppIcon
           size="20"
           icon="copy"
           color="4"
@@ -68,34 +68,34 @@
         color="3"
         class="app-mt-32 app-mb-20"
       />
-      </AppStack>
-      <AppStack
-        align="end"
-        direction="col"
-        class="app-relative app-group"
-      >
-        <AppInput
-          :value="imported"
-          size="18"
-          color="3"
-          tag="textarea"
-          rows="10"
-          placeholder="Paste import data here..."
-          transparent
-          class="app-w-full app-color-text-2"
-          @input="imported = $event"
-        />
-        <AppButton
-          size="16"
-          weight="semibold"
-          type="framed"
-          bg="brand"
-          color="opposite"
-          rounded="3"
-          text="Import Data"
-          class="app-mt-20"
-          @click="onImportPresetClick"
-        />
+    </AppStack>
+    <AppStack
+      align="end"
+      direction="col"
+      class="app-relative app-group"
+    >
+      <AppInput
+        :value="imported"
+        size="18"
+        color="3"
+        tag="textarea"
+        rows="10"
+        placeholder="Paste import data here..."
+        transparent
+        class="app-w-full app-color-text-2"
+        @input="imported = $event"
+      />
+      <AppButton
+        size="16"
+        weight="semibold"
+        type="framed"
+        bg="brand"
+        color="opposite"
+        rounded="3"
+        text="Import Data"
+        class="app-mt-20"
+        @click="onImportPresetClick"
+      />
     </AppStack>
   </AppStack>
 </template>

@@ -8,14 +8,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'index',
-      component: IndexPage,
-      beforeEnter: (to, from, next) => {
-        if (to.query.preset) {
-          next({ name: 'index' })
-        }
-
-        next()
-      }
+      component: IndexPage
     }
   ],
 })

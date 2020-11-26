@@ -1,7 +1,5 @@
 import { createStore } from 'vuex'
-import { createApp } from 'vue'
 import createPersistedState from 'vuex-persistedstate'
-import { serverEndpoint } from '../plugins/vue-prototype'
 
 const generateId = (length = 3) => {
   return '_' + Math.random().toString(36).substr(2, length + 2)
@@ -353,19 +351,6 @@ export default {
     // create new draft preset and set active preset ID
     if (!Object.keys(store.state.presets).length) {
       await store.dispatch('addPreset')
-    }
-
-    const url = new URL(window.location.href)
-    let preset = url.searchParams.get('preset')
-
-    if (preset) {
-      try {
-        preset = JSON.parse(preset)
-        const newPreset = await store.dispatch('addPreset', preset)
-        store.commit('setActivePresetId', newPreset.id)
-      } catch (error) {
-        console.log('Error parsing and setting preset from URL')
-      }
     }
 
     return

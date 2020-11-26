@@ -42,14 +42,14 @@
         bg="25"
         color="1"
         rounded="3"
-        href="#share-preset"
-        text="Share"
+        href="#import-export-preset"
+        text="Import/Export"
       />
       <AppModal
-        ref="sharePresetModal"
-        anchor="share-preset"
+        ref="importExportPresetModal"
+        anchor="import-export-preset"
       >
-        <AppCanvasBottomBarSharePreset
+        <AppCanvasBottomBarImportExportPreset
           :preset="storeActivePreset"
           class="app-w-520 app-pb-80 app-px-60"
         />
@@ -116,7 +116,7 @@ import AppModal from '@ryaposov/essentials/AppModal.vue'
 import AppInput from '@ryaposov/essentials/AppInput.vue'
 
 import AppCanvasBottomBarPresets from './AppCanvasBottomBarPresets.vue'
-import AppCanvasBottomBarSharePreset from './AppCanvasBottomBarSharePreset.vue'
+import AppCanvasBottomBarImportExportPreset from './AppCanvasBottomBarImportExportPreset.vue'
 
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
 
@@ -128,7 +128,7 @@ export default {
     AppModal,
     AppInput,
     AppCanvasBottomBarPresets,
-    AppCanvasBottomBarSharePreset
+    AppCanvasBottomBarImportExportPreset
   },
   computed: {
     defaultScaleOptions () {

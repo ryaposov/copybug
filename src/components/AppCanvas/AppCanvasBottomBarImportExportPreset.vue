@@ -128,7 +128,7 @@ export default {
   emits: ['preset-select', 'preset-remove'],
   data: () => ({
     copied: false,
-    imported: 'hey ya'
+    imported: ''
   }),
   computed: {
     presetString () {

@@ -136,7 +136,7 @@ export default {
           Object.keys(this.canvasScreens).forEach(key => {
             const screen = this.storeActivePreset.screens.find(screen => screen.id === key)
   
-            if (e.data.iframeId !== screen.id) {
+            if (screen && e.data.iframeId !== screen.id) {
               this.canvasScreens[key].iframe.contentWindow.postMessage(e.data, this.$PROXY_URL)
             }
           })

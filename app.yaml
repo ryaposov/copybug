@@ -5,8 +5,10 @@ threadsafe: true
 handlers:
 - url: /
   static_files: dist/index.html
+  secure: always
   upload: index.html
 
 - url: /(.*)
   static_files: dist/\1
+  secure: always
   upload: dist/(.*)

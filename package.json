@@ -6,7 +6,7 @@
     "build": "NODE_ENV=production vite build",
     "lerna": "lerna bootstrap --hoist --nohoist=@ryaposov/* --concurrency=1",
     "svg": "@ryaposov-generate-icons public",
-    "deploy": "npm run build && gcloud app deploy"
+    "deploy": "npm run build && gcloud app deploy --project copybug"
   },
   "dependencies": {
     "body-scroll-lock": "^3.1.5",

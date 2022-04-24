@@ -1,6 +1,8 @@
 import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
+import getDefaultPreset from './defaultPreset.js'
+
 const generateId = (length = 3) => {
   return '_' + Math.random().toString(36).substr(2, length + 2)
 }
@@ -174,21 +176,10 @@ const store = createStore({
       const preset = {
         id: id,
         ...(payload || {
-          name: 'Custom Preset ' + id,
+          ...getDefaultPreset(),
+          id: id,
+          name: 'NY Times ' + id,
           createdAt: new Date().getTime() / 1000,
-          activePageId: null,
-          settings: {
-            mainUrl: 'https://www.apple.com/',
-            defaultSize: null,
-            // defaultPlatform: 'gb', 
-            defaultLanguage: null,
-            ignoreBrowserUi: false,
-            languageRegex: ''
-          },
-          scale: 100,
-          screens: [],
-          pages: [],
-          languages: []
         })
       }
 

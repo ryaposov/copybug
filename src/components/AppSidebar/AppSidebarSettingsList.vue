@@ -1,5 +1,8 @@
 <template>
-  <div :data-name="$NAME">
+  <div
+    :data-name="$NAME"
+    class="component"
+  >
     <div
       v-if="list.length"
       class="app-mb-8"
@@ -13,7 +16,7 @@
         <AppStack
           align="center"
           justify="center"
-          class="app-cursor-pointer app-w-16 app-h-16 app-color-bg-2 app-mr-4 app-rounded-4
+          class="app-cursor-pointer app-w-16 app-h-16 app-color-bg-2 app-mr-4 app-rounded-4 app-flex-shrink-0
       app-transition-opacity app-duration-100 hover:app-opacity-75"
           @click="$emit('remove', index)"
         >
@@ -24,36 +27,42 @@
           />
         </AppStack>
         <AppText
+          :data-text="item.name.replace(/\s/g, '&nbsp;')"
           size="14"
           color="1"
           weight="regular"
-          class="app-relative app-border app-overflow-hidden app-rounded-4 app-color-border-transparent
-      hover:app-color-border-1"
+          display="block"
+          class="component__input-wrap app-relative app-border app-overflow-hidden app-rounded-4 
+            app-color-border-transparent app-px-4 app-flex-shrink-0 app-pb-1
+            hover:app-color-border-1"
         >
           <input
             ref="itemNameInput"
-            type="text"
             :value="item.name"
+            type="text"
             spellcheck="false"
-            class="app-outline-none app-px-4 app-pt-2 app-appearance-none app-color-bg-transparent"
-            :style="fluidInputStyle(item.name)"
+            class="app-outline-none app-appearance-none app-color-bg-transparent
+              app-absolute app-top-0 app-left-0 app-w-full app-text-center app-leading-14"
             @input="$emit('input', { ...item, name: $event.target.value })"
           >
         </AppText>
         <AppText
+          :data-text="item.value.replace(/\s/g, '&nbsp;')"
           size="14"
           color="3"
           weight="regular"
-          class="app-relative app-border app-overflow-hidden app-rounded-4 app-color-border-transparent
-      hover:app-color-border-1"
+          display="block"
+          class="component__input-wrap app-relative app-border app-overflow-hidden app-rounded-4 
+            app-color-border-transparent app-px-4 app-pb-1
+            hover:app-color-border-1"
         >
           <input
             ref="itemValueInput"
-            type="text"
             :value="item.value"
+            type="text"
             spellcheck="false"
-            class="app-outline-none app-px-4 app-pt-2 app-appearance-none app-color-bg-transparent"
-            :style="fluidInputStyle(item.value)"
+            class="app-outline-none app-appearance-none app-color-bg-transparent
+              app-absolute app-top-0 app-left-0 app-w-full app-text-center app-leading-14"
             @input="$emit('input', { ...item, value: $event.target.value })"
           >
         </AppText>
@@ -104,18 +113,14 @@ export default {
       default: () => ([])
     }
   },
-  emits: ['remove', 'add', 'input'],
-  methods: {
-    fluidInputStyle (string) {
-      const numUpper = (string.match(/[A-Z]/g) || []).length
-      const numbers = (string.match(/[0-9]/g) || []).length
-      const numLower = string.length - numUpper - numbers
-      const width = (numUpper * 10.5) + (numLower * 8) + (numbers * 3)
-
-      return {
-        width: (width + 8) + 'px'
-      }
-    }
-  }
+  emits: ['remove', 'add', 'input']
 }
 </script>
+
+<style scoped>
+  .component__input-wrap:after {
+    content: attr(data-text);
+    display: inline-block;
+    color: transparent
+  }
+</style>
